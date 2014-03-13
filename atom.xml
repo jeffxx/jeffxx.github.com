@@ -4,7 +4,7 @@
   <title><![CDATA[Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-03-13T22:18:36+08:00</updated>
+  <updated>2014-03-13T23:16:33+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -20,7 +20,8 @@
     <id>http://jeffxx.github.io/blog/2014/03/13/hello-octopress</id>
     <content type="html"><![CDATA[<h2>HEY</h2>
 
-<p><em>asdfg</em></p>
+<p><em>asdfg</em>
+fucking github</p>
 ]]></content>
   </entry>
   
