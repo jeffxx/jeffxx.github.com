@@ -1,30 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Jeffxx Blog]]></title>
-  <link href="http://jeffxx.github.io/atom.xml" rel="self"/>
-  <link href="http://jeffxx.github.io/"/>
-  <updated>2014-03-14T23:07:12+08:00</updated>
-  <id>http://jeffxx.github.io/</id>
-  <author>
-    <name><![CDATA[cychao]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>BCTF Misc300 Write Up - Jeffxx Blog</title>
+  <meta name="author" content="cychao">
 
   
-  <entry>
-    <title type="html"><![CDATA[BCTF Misc300 Write Up]]></title>
-    <link href="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/"/>
-    <updated>2014-03-14T21:42:29+08:00</updated>
-    <id>http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up</id>
-    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打</p>
+  <meta name="description" content="感冒在家養病逛fb, 突然看到有ctf可以打 馬上開skype問帳號開打XD 直接找一題沒人解的來玩 下載檔案可以看到疑似封包內容的 in out stream 1
+2
+3
+4
+5
+stream = [(&#39;in&#39;, b&#39;\x00\x00\x00T\xffSMBr\x00\ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jeffxx Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jeffxx Blog</a></h1>
+  
+    <h2>隨手筆記.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jeffxx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">BCTF Misc300 Write Up</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-14T21:42:29+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>感冒在家養病逛fb, 突然看到有ctf可以打</p>
 
 <p>馬上開skype問帳號開打XD</p>
 
 <p>直接找一題沒人解的來玩</p>
 
-<p><img src="http://jeffxx.github.io/images/writeup/bctf2014_misc300_problem.png"></p>
+<p><img src="/images/writeup/bctf2014_misc300_problem.png"></p>
 
 <p>下載檔案可以看到疑似封包內容的 in out stream</p>
 
@@ -119,7 +197,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><img src="http://jeffxx.github.io/images/writeup/bctf2014_misc300_pcap.PNG"></p>
+<p><img src="/images/writeup/bctf2014_misc300_pcap.PNG"></p>
 
 <p>看到\BROWSER 又有叫 NetrAddAlternateComputerName</p>
 
@@ -230,26 +308,114 @@
 <p>他就會把key寫進registry裡面</p>
 
 <p><em>可惜這次重感冒+隔天要上班, 臨時打也找不到人 只有學弟陪我玩QQ</em></p>
-]]></content>
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    <title type="html"><![CDATA[Hello Octopress]]></title>
-    <link href="http://jeffxx.github.io/blog/2014/03/13/hello-octopress/"/>
-    <updated>2014-03-13T22:13:31+08:00</updated>
-    <id>http://jeffxx.github.io/blog/2014/03/13/hello-octopress</id>
-    <content type="html"><![CDATA[<h2>HEY</h2>
 
-<p>fucking github</p>
+<span class="byline author vcard">Posted by <span class="fn">cychao</span></span>
 
-<p>去年就弄了個domain但當時被github表超久,後來就沒空弄了XD</p>
+      
 
-<p>昨天才發現不知何時gihub改成要email認證過 github page才會更新</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>printf("hello world")</span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
+
+
+
+
+
   
-</feed>
+
+
+<time datetime="2014-03-14T21:42:29+08:00" pubdate data-updated="true">Mar 14<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bctf/'>bctf</a>, <a class='category' href='/blog/categories/ctf/'>ctf</a>, <a class='category' href='/blog/categories/packet/'>packet</a>, <a class='category' href='/blog/categories/writeup/'>writeup</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/" data-via="" data-counturl="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/13/hello-octopress/" title="Previous Post: Hello Octopress">&laquo; Hello Octopress</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/14/bctf-misc300-write-up/">BCTF Misc300 Write Up</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/13/hello-octopress/">Hello Octopress</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - cychao -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Test | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/test/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-03-13T23:16:33+08:00</updated>
+  <updated>2014-03-14T23:07:12+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -20,8 +20,15 @@
     <id>http://jeffxx.github.io/blog/2014/03/13/hello-octopress</id>
     <content type="html"><![CDATA[<h2>HEY</h2>
 
-<p><em>asdfg</em>
-fucking github</p>
+<p>fucking github</p>
+
+<p>去年就弄了個domain但當時被github表超久,後來就沒空弄了XD</p>
+
+<p>昨天才發現不知何時gihub改成要email認證過 github page才會更新</p>
+
+<p><code>
+printf("hello world")
+</code></p>
 ]]></content>
   </entry>
   
