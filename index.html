@@ -111,9 +111,9 @@
 
 <p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把</p>
 
-<p><em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意(flee</em></p>
+<p><em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意被公開(flee</em></p>
 
-<p>所有題目裡,值得記錄下來的是web300</p>
+<p>總之在正常的題目裡,值得記錄下來的是web300</p>
 
 <p>直接看題目</p>
 
@@ -160,7 +160,9 @@
 
 <p>cookie只能用一次,且鎖php session</p>
 
-<p>這時就會發現SQLmap真的很強大, 可以自訂每次request 前執行的動作 修改每次的cookie parameter</p>
+<p><img src="/images/writeup/backdoor2014_w300_status_setcookie.PNG"></p>
+
+<p>這時就會發現SQLmap真的很強大, 可以自訂每次request 前執行的動作 修改每次的cookie/parameter</p>
 
 <p><img src="/images/writeup/backdoor2014_sqlmap_eval_usage.PNG"></p>
 
@@ -206,7 +208,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>相關參數
+<blockquote><blockquote><p>相關參數
 -u url
 &mdash;data Post的資料
 &mdash;string SQL指令執行是true web會回傳的關鍵字
@@ -222,7 +224,7 @@
 &mdash;tables 撈table , 可用-D 指定database
 &mdash;columns 撈欄位 , 可用-T 指定table
 &mdash;dump 撈資料, 要用-C 指定欄位 -T 指定table
-&mdash;dump-all 撈所有資料 再bool-based底下會很慢</p>
+&mdash;dump-all 撈所有資料 再bool-based底下會很慢</p></blockquote></blockquote>
 
 <hr />
 
