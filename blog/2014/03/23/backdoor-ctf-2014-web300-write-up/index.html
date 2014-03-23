@@ -215,8 +215,6 @@
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
 </pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">-u url</span>
 </span><span class='line'><span class="go">--data Post的資料</span>
 </span><span class='line'><span class="go">--string SQL指令執行是true web會回傳的關鍵字</span>
@@ -225,20 +223,29 @@
 </span><span class='line'><span class="go">--user-agent 指定user agent</span>
 </span><span class='line'><span class="go">--referer 指定ref page</span>
 </span><span class='line'><span class="go">--eval 每次request前須執行的指令</span>
-</span><span class='line'>
-</span><span class='line'><span class="go">撈資料</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>console
-&mdash;users 撈db帳號
-&mdash;databases 撈db
-&mdash;tables 撈table , 可用-D 指定database
-&mdash;columns 撈欄位 , 可用-T 指定table
-&mdash;dump 撈資料, 要用-C 指定欄位 -T 指定table
-&mdash;dump-all 撈所有資料 再bool-based底下會很慢</p>
+<p>撈資料</p>
 
-<p>&mdash;threads 指定同時run幾隻 加快速度</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">--users 撈db帳號</span>
+</span><span class='line'><span class="go">--databases 撈db</span>
+</span><span class='line'><span class="go">--tables 撈table , 可用-D 指定database</span>
+</span><span class='line'><span class="go">--columns 撈欄位 , 可用-T 指定table</span>
+</span><span class='line'><span class="go">--dump 撈資料, 要用-C 指定欄位 -T 指定table </span>
+</span><span class='line'><span class="go">--dump-all 撈所有資料 再bool-based底下會很慢</span>
+</span><span class='line'><span class="go">--threads 指定同時run幾隻 加快速度</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 </div>
 
 
