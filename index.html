@@ -9,7 +9,7 @@
   <meta name="author" content="cychao">
 
   
-  <meta name="description" content="這次CTF不難 早上11:00開始玩到晚上12:00時已經差三題全解 後來 Orange 出手成績直接爆表 有趣的是主辦單位在規則上寫說: The competition requires you to find flags to gain points. Some flags can be &hellip;">
+  <meta name="description" content="這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名 記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計. 現在好像還看的到 有興趣的可以看一下 http://play.plaidctf.com/scoreboard PPP出的題目非常棒, 像是: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,6 +65,81 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/">PlaidCTF Forensics 400 ZFS Write-up</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T21:04:29+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+        
+           | <a href="/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/#disqus_thread"
+             data-disqus-identifier="http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名</p>
+
+<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.</p>
+
+<p>現在好像還看的到  有興趣的可以看一下</p>
+
+<p><a href="http://play.plaidctf.com/scoreboard">http://play.plaidctf.com/scoreboard</a></p>
+
+<p><img src="/images/writeup/plaidctf2014_problemboard.png"></p>
+
+<p><img src="/images/writeup/plaidctf2014_scoreboard.png"></p>
+
+<p>PPP出的題目非常棒, 像是:</p>
+
+<blockquote><p>二次汙染的 Blind SQL injection &ndash; WhatsCat</p>
+
+<p>從 Memoery dump 挖出 master secret key 解 https</p>
+
+<p>跟上潮流的 Heartbleed</p>
+
+<p>被埋後門的GCC</p>
+
+<p>要改Return address 或 GOT entry的 python jail</p>
+
+<p>只剩下3成的RSA key reconstruction</p></blockquote>
+
+<p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
+
+<p>挑一個解最久的題目zfs來寫XD</p>
+
+<p>這題是跟atdog一起解的,前面卡關卡很久</p>
+
+<p>最後atdog用人眼讀zfs data structure把key看出來</p>
+
+<p>&hellip;&hellip;..未完待續</p>
+
+<p>// 我承認我只是想先曬計分板(被毆飛</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -208,7 +283,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<blockquote><blockquote><p>相關參數</p></blockquote></blockquote>
+<p>相關參數</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -566,6 +641,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/">PlaidCTF Forensics 400 ZFS Write-up</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Backdoor CTF 2014 Web300 Write-up</a>

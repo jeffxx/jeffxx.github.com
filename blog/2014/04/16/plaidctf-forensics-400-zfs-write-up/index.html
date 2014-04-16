@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: Bctf - Jeffxx Blog</title>
+  <title>PlaidCTF Forensics 400 ZFS Write-up - Jeffxx Blog</title>
   <meta name="author" content="cychao">
 
   
-  <meta name="description" content="Category: bctf">
+  <meta name="description" content="這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名 記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計. 現在好像還看的到 有興趣的可以看一下 http://play.plaidctf.com/scoreboard PPP出的題目非常棒, 像是: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jeffxx.github.ioblog/categories/bctf">
+  <link rel="canonical" href="http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Jeffxx Blog" type="application/atom+xml">
@@ -64,36 +64,130 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Bctf</h1>
+    
+      <h1 class="entry-title">PlaidCTF Forensics 400 ZFS Write-up</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T21:04:29+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://jeffxx.github.io">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名</p>
 
-  
-  <h2>2014</h2>
+<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.</p>
 
-<article>
-  
-<h1><a href="/blog/2014/03/14/bctf-misc300-write-up/">BCTF Misc300 Write Up</a></h1>
-<time datetime="2014-03-14T21:42:29+08:00" pubdate><span class='month'>Mar</span> <span class='day'>14</span> <span class='year'>2014</span></time>
+<p>現在好像還看的到  有興趣的可以看一下</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/bctf/'>bctf</a>, <a class='category' href='/blog/categories/ctf/'>ctf</a>, <a class='category' href='/blog/categories/packet/'>packet</a>, <a class='category' href='/blog/categories/writeup/'>writeup</a></span>
-</footer>
+<p><a href="http://play.plaidctf.com/scoreboard">http://play.plaidctf.com/scoreboard</a></p>
 
+<p><img src="/images/writeup/plaidctf2014_problemboard.png"></p>
 
-</article>
+<p><img src="/images/writeup/plaidctf2014_scoreboard.png"></p>
 
+<p>PPP出的題目非常棒, 像是:</p>
+
+<blockquote><p>二次汙染的 Blind SQL injection &ndash; WhatsCat</p>
+
+<p>從 Memoery dump 挖出 master secret key 解 https</p>
+
+<p>跟上潮流的 Heartbleed</p>
+
+<p>被埋後門的GCC</p>
+
+<p>要改Return address 或 GOT entry的 python jail</p>
+
+<p>只剩下3成的RSA key reconstruction</p></blockquote>
+
+<p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
+
+<p>挑一個解最久的題目zfs來寫XD</p>
+
+<p>這題是跟atdog一起解的,前面卡關卡很久</p>
+
+<p>最後atdog用人眼讀zfs data structure把key看出來</p>
+
+<p>&hellip;&hellip;..未完待續</p>
+
+<p>// 我承認我只是想先曬計分板(被毆飛</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">cychao</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-16T21:04:29+08:00" pubdate data-updated="true">Apr 16<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ctf/'>ctf</a>, <a class='category' href='/blog/categories/foensics/'>foensics</a>, <a class='category' href='/blog/categories/plaid/'>plaid</a>, <a class='category' href='/blog/categories/writeup/'>writeup</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/" data-via="" data-counturl="http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/" title="Previous Post: Backdoor CTF 2014 Web300 write-up">&laquo; Backdoor CTF 2014 Web300 write-up</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -144,7 +238,10 @@
       var disqus_shortname = 'jeffxxblog';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/';
+        var disqus_url = 'http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

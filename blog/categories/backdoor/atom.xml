@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Backdoor | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/backdoor/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-03-23T21:50:14+08:00</updated>
+  <updated>2014-04-16T22:47:48+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -117,7 +117,7 @@ sqlmap -u <a href="http://backdoor.cognizance.org.in/problems/web300/check.php">
 
 <p>```</p>
 
-<blockquote><blockquote><p>相關參數
+<p>相關參數
 <code>console
 -u url
 --data Post的資料
@@ -137,7 +137,7 @@ sqlmap -u <a href="http://backdoor.cognizance.org.in/problems/web300/check.php">
 --dump 撈資料, 要用-C 指定欄位 -T 指定table
 --dump-all 撈所有資料 再bool-based底下會很慢
 --threads 指定同時run幾隻 加快速度
-</code></p></blockquote></blockquote>
+</code></p>
 ]]></content>
   </entry>
   
