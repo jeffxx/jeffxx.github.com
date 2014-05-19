@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Foensics | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/foensics/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-04-16T22:47:48+08:00</updated>
+  <updated>2014-05-19T21:21:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -32,17 +32,17 @@
 
 <p>PPP出的題目非常棒, 像是:</p>
 
-<blockquote><p>二次汙染的 Blind SQL injection &ndash; WhatsCat</p>
+<blockquote><p>二次汙染的 Blind SQL injection &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/whatscat">WhatsCat</a></p>
 
-<p>從 Memoery dump 挖出 master secret key 解 https</p>
+<p>從 Memoery dump 挖出 master secret key 解 https &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/curlcore">Curlcore</a></p>
 
-<p>跟上潮流的 Heartbleed</p>
+<p>跟上潮流的 <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/heartbleed">Heartbleed</a></p>
 
-<p>被埋後門的GCC</p>
+<p>被埋後門的 <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/gcc">GCC</a></p>
 
-<p>要改Return address 或 GOT entry的 python jail</p>
+<p>要改Return address 或 GOT entry的 python jail &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/nightmares">Nightmares</a></p>
 
-<p>只剩下3成的RSA key reconstruction</p></blockquote>
+<p>只剩下3成的RSA key reconstruction &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/rsa">RSA</a></p></blockquote>
 
 <p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
 
