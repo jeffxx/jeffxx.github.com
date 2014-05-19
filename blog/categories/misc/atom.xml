@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Misc | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/misc/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-05-19T21:21:53+08:00</updated>
+  <updated>2014-05-19T21:30:26+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -125,7 +125,7 @@ rsatool.py -e 65537 \</p>
 <p><code>http://services.2014.shallweplayaga.me/flag_76aff3e0d77b38900a66e35687effaff</code>
 <code>http://services.2014.shallweplayaga.me/eme_23dc0673382940749407ad8619a41</code></p>
 
-<p>第一個連結是被加密過的flag, 第二個連結看起來少了1.5bytes, Orange寫了隻script爆出最後2byte</p>
+<p>第一個連結是被加密過的flag, 第二個連結看起來少了3bytes, Orange寫了隻script爆出最後3byte</p>
 
 <p><code>http://services.2014.shallweplayaga.me/eme_23dc0673382940749407ad8619a410cc</code></p>
 
