@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Foensics | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/foensics/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T12:47:19+08:00</updated>
+  <updated>2014-08-13T12:55:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -20,9 +20,8 @@
     <id>http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up</id>
     <content type="html"><![CDATA[<p>這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名</p>
 
-<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.</p>
-
-<p>現在好像還看的到  有興趣的可以看一下</p>
+<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.
+現在好像還看的到  有興趣的可以看一下</p>
 
 <p><a href="http://play.plaidctf.com/scoreboard">http://play.plaidctf.com/scoreboard</a></p>
 
@@ -44,13 +43,11 @@
 
 <p>只剩下3成的RSA key reconstruction &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/rsa">RSA</a></p></blockquote>
 
-<p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
+<p>不過沒有那麼多時間可以寫write-up , 只能寫一篇,
+挑一個解最久的題目zfs來寫XD</p>
 
-<p>挑一個解最久的題目zfs來寫XD</p>
-
-<p>這題是跟atdog一起解的,前面卡關卡很久</p>
-
-<p>最後atdog用人眼讀zfs data structure把key看出來</p>
+<p>這題是跟atdog一起解的,前面卡關卡很久,
+最後atdog用人眼讀zfs data structure把key看出來</p>
 
 <p>&hellip;&hellip;..未完待續</p>
 

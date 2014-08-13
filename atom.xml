@@ -4,7 +4,7 @@
   <title><![CDATA[Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T12:47:19+08:00</updated>
+  <updated>2014-08-13T12:55:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -20,15 +20,20 @@
     <id>http://jeffxx.github.io/blog/2014/08/13/2014-defcon-22-final-can-sai-xin-de-shang</id>
     <content type="html"><![CDATA[<p>  <img src="http://jeffxx.github.io/images/defcon22_final/captain_token.jpg"></p>
 
-<p> 寫作能力不佳,平常只敢寫技術文章,不是很敢寫心情抒發之類的東西
- 但這次真的是太感動了,決定勇敢嘗試一下XD
- 感謝超罩的隊友們讓我有這次機會一起前進 defcon final</p>
+<p> 寫作能力不佳,平常只寫技術文章,不是很敢寫心情抒發之類的東西
+ 但這次真的是太感動了,決定勇敢嘗試一下XD</p>
 
-<p> Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
+<p> 感謝超罩的隊友們 :
+ Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
 
-<p>感謝Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+<p>感謝 Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+
+<p>感謝趨勢贊助旅費讓我們可以成行.</p>
 
 <p> 比賽時忘記拍照, 感謝 <a href="http://blog.orange.tw">Orange</a> 友情提供照片.</p>
+
+<!-- more -->
+
 
 <hr />
 
@@ -155,6 +160,9 @@
 <p><img src="http://jeffxx.github.io/images/writeup/defcon22_scoreboard.PNG"></p>
 
 <p>這題靠整個團隊的合作在一小時內快速解出, 實在太值得紀念. 故本次選擇寫這題的writeup</p>
+
+<!-- more -->
+
 
 <ul>
 <li><strong>Category:</strong> HJ</li>
@@ -326,9 +334,8 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
     <id>http://jeffxx.github.io/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up</id>
     <content type="html"><![CDATA[<p>這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名</p>
 
-<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.</p>
-
-<p>現在好像還看的到  有興趣的可以看一下</p>
+<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.
+現在好像還看的到  有興趣的可以看一下</p>
 
 <p><a href="http://play.plaidctf.com/scoreboard">http://play.plaidctf.com/scoreboard</a></p>
 
@@ -350,13 +357,11 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
 
 <p>只剩下3成的RSA key reconstruction &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/rsa">RSA</a></p></blockquote>
 
-<p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
+<p>不過沒有那麼多時間可以寫write-up , 只能寫一篇,
+挑一個解最久的題目zfs來寫XD</p>
 
-<p>挑一個解最久的題目zfs來寫XD</p>
-
-<p>這題是跟atdog一起解的,前面卡關卡很久</p>
-
-<p>最後atdog用人眼讀zfs data structure把key看出來</p>
+<p>這題是跟atdog一起解的,前面卡關卡很久,
+最後atdog用人眼讀zfs data structure把key看出來</p>
 
 <p>&hellip;&hellip;..未完待續</p>
 
@@ -369,9 +374,8 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
     <link href="http://jeffxx.github.io/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/"/>
     <updated>2014-03-23T13:47:44+08:00</updated>
     <id>http://jeffxx.github.io/blog/2014/03/23/backdoor-ctf-2014-web300-write-up</id>
-    <content type="html"><![CDATA[<p>這次CTF不難  早上11:00開始玩到晚上12:00時已經差三題全解</p>
-
-<p>後來 Orange 出手成績直接爆表</p>
+    <content type="html"><![CDATA[<p>這次CTF不難  早上11:00開始玩到晚上12:00時已經差三題全解,
+後來 Orange 出手成績直接爆表</p>
 
 <p><img src="http://jeffxx.github.io/images/writeup/backdoor2014_scoreboard.PNG"></p>
 
@@ -379,13 +383,15 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
 
 <blockquote><p>The competition requires you to find flags to gain points. Some flags can be gained by completing tasks, others are hidden in different places.</p></blockquote>
 
-<p>這不是讓大家去打網站嗎OTZ</p>
+<p>這不是讓大家去打網站嗎OTZ&hellip;.</p>
 
-<p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把</p>
+<p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把
+<em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意被公開(flee</em></p>
 
-<p><em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意被公開(flee</em></p>
+<p>總之在一般的題目裡,值得寫writeup的只有web300</p>
 
-<p>總之在正常的題目裡,值得記錄下來的是web300</p>
+<!-- more -->
+
 
 <p>直接看題目</p>
 
@@ -529,13 +535,15 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
     <link href="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/"/>
     <updated>2014-03-14T21:42:29+08:00</updated>
     <id>http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up</id>
-    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打</p>
-
-<p>馬上開skype問帳號開打XD</p>
+    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打
+馬上開skype問帳號開打XD</p>
 
 <p>直接找一題沒人解的來玩</p>
 
 <p><img src="http://jeffxx.github.io/images/writeup/bctf2014_misc300_problem.png"></p>
+
+<!-- more -->
+
 
 <p>下載檔案可以看到疑似封包內容的 in out stream</p>
 

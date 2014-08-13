@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Defcon | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/defcon/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T12:47:19+08:00</updated>
+  <updated>2014-08-13T12:55:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -20,15 +20,20 @@
     <id>http://jeffxx.github.io/blog/2014/08/13/2014-defcon-22-final-can-sai-xin-de-shang</id>
     <content type="html"><![CDATA[<p>  <img src="/images/defcon22_final/captain_token.jpg"></p>
 
-<p> 寫作能力不佳,平常只敢寫技術文章,不是很敢寫心情抒發之類的東西
- 但這次真的是太感動了,決定勇敢嘗試一下XD
- 感謝超罩的隊友們讓我有這次機會一起前進 defcon final</p>
+<p> 寫作能力不佳,平常只寫技術文章,不是很敢寫心情抒發之類的東西
+ 但這次真的是太感動了,決定勇敢嘗試一下XD</p>
 
-<p> Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
+<p> 感謝超罩的隊友們 :
+ Orange Sean Jery Peter Shik atdog dm4 lucas dada</p>
 
-<p>感謝Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+<p>感謝 Alan, TT , GD , Kenny, Turkey 四處奔走 在拉斯維加斯幫我們打理食衣住行</p>
+
+<p>感謝趨勢贊助旅費讓我們可以成行.</p>
 
 <p> 比賽時忘記拍照, 感謝 <a href="http://blog.orange.tw">Orange</a> 友情提供照片.</p>
+
+<!-- more -->
+
 
 <hr />
 
@@ -155,6 +160,9 @@
 <p><img src="/images/writeup/defcon22_scoreboard.PNG"></p>
 
 <p>這題靠整個團隊的合作在一小時內快速解出, 實在太值得紀念. 故本次選擇寫這題的writeup</p>
+
+<!-- more -->
+
 
 <ul>
 <li><strong>Category:</strong> HJ</li>

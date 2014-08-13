@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Misc | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/misc/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T12:47:19+08:00</updated>
+  <updated>2014-08-13T12:55:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -31,6 +31,9 @@
 <p><img src="/images/writeup/defcon22_scoreboard.PNG"></p>
 
 <p>這題靠整個團隊的合作在一小時內快速解出, 實在太值得紀念. 故本次選擇寫這題的writeup</p>
+
+<!-- more -->
+
 
 <ul>
 <li><strong>Category:</strong> HJ</li>

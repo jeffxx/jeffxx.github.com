@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Packet | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/packet/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T12:47:19+08:00</updated>
+  <updated>2014-08-13T12:55:53+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -18,13 +18,15 @@
     <link href="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/"/>
     <updated>2014-03-14T21:42:29+08:00</updated>
     <id>http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up</id>
-    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打</p>
-
-<p>馬上開skype問帳號開打XD</p>
+    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打
+馬上開skype問帳號開打XD</p>
 
 <p>直接找一題沒人解的來玩</p>
 
 <p><img src="/images/writeup/bctf2014_misc300_problem.png"></p>
+
+<!-- more -->
+
 
 <p>下載檔案可以看到疑似封包內容的 in out stream</p>
 
