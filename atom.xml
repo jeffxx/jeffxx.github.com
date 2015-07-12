@@ -4,7 +4,7 @@
   <title><![CDATA[Jeffxx Blog]]></title>
   <link href="http://jeffxx.github.io/atom.xml" rel="self"/>
   <link href="http://jeffxx.github.io/"/>
-  <updated>2015-07-12T17:07:24+08:00</updated>
+  <updated>2015-07-12T17:51:35+08:00</updated>
   <id>http://jeffxx.github.io/</id>
   <author>
     <name><![CDATA[cychao]]></name>
@@ -12,6 +12,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Defcon 22 Final HITCON 參賽心得 (下)]]></title>
+    <link href="http://jeffxx.github.io/blog/2015/07/12/defcon-22-final-hitcon-can-sai-xin-de-xia/"/>
+    <updated>2015-07-12T15:08:11+08:00</updated>
+    <id>http://jeffxx.github.io/blog/2015/07/12/defcon-22-final-hitcon-can-sai-xin-de-xia</id>
+    <content type="html"><![CDATA[<p><img src="http://jeffxx.github.io/images/defcon22_final/2015_years_ago.png">
+一年過去，打完Defcon 23 Qual 的隔天FB跳出了這個&hellip;下集只好變成這一年的總結。</p>
+
+<p>去年Defcon Qual打到第二名主要是運氣好，還有橘子的超級後門得了很多分數，
+實際上開發Exploit的速度還是跟歐美強隊差一大截，所以大家討論後定了一些計劃來培養新隊員及訓練我們的技術。</p>
+
+<!-- more -->
+
+
+<h3>課程</h3>
+
+<p>臺大交大開相關課程，舉辦台交搶旗賽當作課程的期末考
+<a href="http://www.setn.com/columnnews.aspx?newsid=57530&amp;pagegroupid=9">台大交大「駭客搶旗對抗賽」</a>
+臺大的課程網站關了，<a href="http://secprog.cs.nctu.edu.tw">交大的目前還在</a></p>
+
+<p>為了辦這個比賽，還和當時沒修課卻每次都第一個做出作業的 <a href="http://l4ys.tw/">Lays</a> ，用 three.js 設計了一個酷炫的星際戰場，目前還可以看到台交賽的10倍速<a href="http://scoreboard.ctf.tw/battlefield/?2">replay</a>
+<img src="http://jeffxx.github.io/images/defcon22_final/ctctf_battfield.png"></p>
+
+<blockquote><p>開課這段時間壓力很大，假日幾乎都窩在電腦前做講義出作業，平時下班還要趕比賽系統，現在回頭看反而是進步幅度最大的一段時間。</p></blockquote>
+
+<hr />
+
+<p>這一年也參加了幾場國際賽:</p>
+
+<p><a href="http://www.ithome.com.tw/news/91666">臺灣HITCON打進馬來西亞駭客競賽第二名</a></p>
+
+<ul>
+<li>這場原本可第一，但中間exploit停了數小時沒發現XD</li>
+</ul>
+
+
+<p><a href="http://news.ltn.com.tw/news/life/breakingnews/1227956">日本最大駭客競賽 台灣隊伍勇奪第二</a></p>
+
+<ul>
+<li>這場學到幾招，最有趣的是 SQL injection若遇到多個query無法用一個payload union時，可以用if ( random()，true，false )去讓同一個input，兩次query的結果不一樣.</li>
+</ul>
+
+
+<p><a href="http://news.ltn.com.tw/news/life/breakingnews/1244789">波士頓駭客大賽 台灣HITCON拿下世界賽門票</a></p>
+
+<ul>
+<li>這場在打醬油，幾乎全都217解的&hellip;</li>
+</ul>
+
+
+<blockquote><p>每次回來都想寫文章記錄， 卻完全抽不出時間&hellip;.</p></blockquote>
+
+<hr />
+
+<h3>分隊挑戰</h3>
+
+<p>HITCON 戰隊其實是去年Defcon初賽時臨時成立的， 當時的成員主要是臺大217 ， 交大Crax ， 及 chroot 成員組成。
+隨著我們目標及能力的提升， 一般比賽都不會用 HITCON 名義參加. 而是分成三隊 217， bamboofox ， OOATXX</p>
+
+<ul>
+<li><p>217 大約四到六人挑戰每場比賽的冠軍，或許明年他們可以獨自出一隊挑戰世界冠軍。</p></li>
+<li><p><a href="https://www.facebook.com/groups/1513695338847931/?fref=ts">bamboofox</a> 主要為交大學生 兩個實驗室 CRAX (sqlab) ， DSNS 和去年的修課學生 ， 有幾位清大，中原及中央的學生。
+<strong> bamboofox 每週有讀書會， 暑假還開了暑期入門班(據說場場爆滿) . 現在應該進入第二周課程 </strong></p></li>
+<li><p>OOATXX 則是三人隊伍， Orange Atdog Jeffxx  為了不與 217 差距太大.又怕bamboofox新進成員都解不到題目而成立的。
+雖然只有三人，但每次比賽都沒辦法全員到齊XD 比賽若到星期一的還會因為要上班只能最後一天放推。</p></li>
+</ul>
+
+
+<p><img src="http://jeffxx.github.io/images/defcon22_final/0ctf2015_scoreboard.png"></p>
+
+<blockquote><p>0ctf qual 睡前第八， 要不是隔天要上班起碼有前十&hellip;</p></blockquote>
+
+<p>分成三隊打了半年，最後 Defcon Qual 集合在一起打初賽，這次雖然沒有獲得前三甲，但整場比賽都穩穩的在晉級名額內.</p>
+
+<p><img src="http://jeffxx.github.io/images/defcon22_final/defcon2015_qual_scoreboard.png">
+Bamboofox 也靠自己的實力打到37名，若不是幾位exploit高手被拉到HITCON支援，應該有機會更高。
+還剩下一個月就是 Defcon Final，希望我到時還能寫一篇 :P</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CSAW CTF 2014 Forensics 300 Fluffy No More Write-up]]></title>
